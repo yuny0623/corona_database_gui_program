@@ -5,23 +5,15 @@ package main_act;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Desktop;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-//import java.sql.Connection;
-//import java.sql.PreparedStatement;
-//import java.sql.ResultSet;
-//import java.sql.SQLException;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 
-import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -29,100 +21,31 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 @SuppressWarnings("serial")
 public class guiAct2 extends JFrame implements ActionListener{
-
+	ImageIcon icon; //배경이미지 오른쪽 메뉴들 BACKGROUND에 이미지 삽입해줌. 
 	static String path = null;  //이미지의 경로 
 	
 	//생성자
 	guiAct2(){                                           //guiAct 클래스의 생정자. 
 		setTitle("corona information program");
 		setLayout(new BorderLayout(10,10));    
-		
+		//getContentPane().setBackground(Color.BLUE);
 		makeMenu();//makeMenu()메서드 실행 
 		showEast();//프레임 왼쪽에 붙는 예방수칙 텍스트 영역을 만들어내는 showEast메서드 실행 
 		show_image_center(); //서울시 이미지를 프레임의 중앙에 표시하는 메서드  
-		//showSouth();
-		//new image_show();
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // x를 누르면 바로 종료함. 
+
+		dispose(); // 닫으면 지금 이 창만 사라짐. 
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // x를 누르면 바로 종료함. 
 		setSize(1080,600);                              //화면 크기 1080X720 설정  
 		setVisible(true);                               //gui창 보이게 함. 
 	}
-	
-	//---------------------새로운 창을 만들어서 메뉴의 내용을 출력해준다. database를 확인하기 위한 목적임 ------------------------	
-	//메뉴바에 있는 보기 메뉴를 클릭했을 때 각 메뉴에 따른 내용을 출력해줄 수 있는 내용. switch에서 호출할 클래스임. 
-	//새로운 창을 만들고, 텍스트 영역에 해당하는 데이터값을 표시해준다. 
-		static class newWindow extends JFrame{ //정적 메서드 // 미리 로드시켜놓는다. 
-			JPanel panel;   //다른 메서드에서 사용할 수 있도록 static으로 정의했다.  
-			static JTextArea area; //다른 메서드에서 사용할 수 있도록 static으로 정의했다. 
-			newWindow(){
-				setTitle("해당 내용 출력");
-				setLayout(new BorderLayout(10,10));
-				
-				panel = new JPanel();
-				area = new JTextArea(30,20);
-				area.setText("");
-				area.setEditable(false);
-				area.setForeground(Color.BLUE);			
-				panel.add(area);
-				add(panel,BorderLayout.CENTER);		
 
-				setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //종료할때 이 창만 종료시키고, 자원을 모두 반납한다. 
-				setSize(300,500);
-				setVisible(true);
-			}
-		}
-		class newWindow_for_button extends JFrame{ //정적 메서드 // 미리 로드시켜놓는다. 
-			JPanel panel;   //다른 메서드에서 사용할 수 있도록 static으로 정의했다.  
-			JTextArea area; //다른 메서드에서 사용할 수 있도록 static으로 정의했다. 
-			JScrollPane scrollPane;
-			newWindow_for_button(int i){  //버튼을 눌렀을 때 사용할 메서드의 생성자 정의이다. 
-
-				setTitle("Data");
-				setLayout(new BorderLayout(10,10));
-				
-				panel = new JPanel();
-				area = new JTextArea(30,20);
-				
-				//String log = Database_sort_by_number.sb_value().toString()	
-				new Database_sort_by_number(i);// int i는 각각 1~14번에 해당하는 번호를 의미한다. Database_sort_by_number에 인수로 전달하고 해당클래스 내부에서
-				//데이터 정렬을 진행한다. 
-				area.setText(Database_sort_by_number.sb_value().toString()); //번호에 따른 정보를 toString으로 가져온다. 
-				area.setEditable(false);
-				area.setForeground(Color.BLUE);		
-				scrollPane = new JScrollPane(area);
-				//panel.add(scrollPane);
-				panel.add(area);
-				add(panel,BorderLayout.CENTER);		
-
-				setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //종료할때 이 창만 종료시키고, 자원을 모두 반납한다. 
-				setSize(300,500);
-				setVisible(true);
-			}
-
-		}
-	//---------------------새로운 창을 만들어서 메뉴의 내용을 출력해준다. database를 확인하기 위한 목적임 ------------------------
-
-	class MyPanel extends JPanel{ // 이미지를 생성하는 클래스 new Mypanel(s) 이때 s 경로에 path 값을 써주면 됩니다. 
-		BufferedImage img;
-		public MyPanel(String s) {
-			try {
-				img = ImageIO.read(new File(s));
-			}catch(IOException e) {}
-		}
-		public void paintComponent(Graphics g) {
-			super.paintComponent(g);
-			g.drawImage(img,0,0,getWidth(),getHeight(),null);
-		}
-	}
-	
 	// 프레임의 정중앙에 서울시 이미지를 출력하는 메서드 입니다. 
 	void show_image_center() {
-
-		add(new MyPanel("C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\map.png"));
+		add(new make_seoul_image("C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\map.png"));
 	}
 	
 	//예방 수칙 패널에 담아 출력 하기 
@@ -133,13 +56,29 @@ public class guiAct2 extends JFrame implements ActionListener{
 		JPanel panel_east_top = new JPanel();//메인 패널에 부착할 우측 상단의 패널을 생성함,. 
 		JPanel panel_east_center = new JPanel();//메인 패널에 부착할 우측 중앙의 패널을 생성한다. 
 		JPanel panel_east_bottom = new JPanel(); //메인 패널의 우측 하단에 부착할 패널을 생성함. 
+		
+		
+		icon = new ImageIcon("C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\virus-4835301_640.jpg");
+		JPanel background_menu = new JPanel() {
+			public void paintComponent(Graphics g) {
+				g.drawImage(icon.getImage(),0,0,null);
+				setOpaque(false);
+				super.paintComponent(g);;
+			}
+		};
+
+//		panel_east_center.setBackground(new Color(70, 161, 235));
+//		panel_east_top.setBackground(new Color(70, 161, 235));
+//		panel_east_bottom.setBackground(new Color(70, 161, 235));
+		
 		JTextArea area1 = new JTextArea(30,40);  //텍스트 영역을 생성한다, 
 		//JTextArea area2 = new JTextArea(30,40);  //텍스트 영역을 생성한다,. 
 		
 		JCheckBox cb1 = new JCheckBox("발열"); //체크박스를 생성한다. 코로나 진단 검사를 간단하게 실시해주는 체크박스이다. 
 		cb1.setBounds(100,100,150,20);
 		panel_east_center.add(cb1);
-		
+//		background_menu.add(cb1);
+//		panel_east_main.add(background_menu);
 		JButton btn1 = new JButton("연번"); //1~14번에 해당하는 버튼을 정의한다. 
 		JButton btn2 = new JButton("확진일");
 		JButton btn3 = new JButton("환자번호");
@@ -155,7 +94,7 @@ public class guiAct2 extends JFrame implements ActionListener{
 		JButton btn13 = new JButton("수정일");
 		JButton btn14 = new JButton("노출여부");
 		
-		panel_east_bottom.setLayout(new GridLayout(0,2)); //우측 하단의 패널의 정렬릉ㄹ 3열로 정의한다. 
+		panel_east_bottom.setLayout(new GridLayout(0,2)); //우측 하단의 패널의 정렬릉ㄹ 2열로 정의한다. 
 		panel_east_main.setLayout(new GridLayout(0,1));  //메인 패널의 정렬을 gridlayout으로 한다. 1열을 생성한다. 
 		
 		area1.setText("1. 흐르는 물에 비누로 손을 꼼꼼하게 씻기. \n"         
@@ -360,6 +299,9 @@ public class guiAct2 extends JFrame implements ActionListener{
 		item = new JMenuItem("COVID-19정보");
 		item.addActionListener(this);
 		m3.add(item);
+		item = new JMenuItem("정부 최신 뉴스");
+		item.addActionListener(this);
+		m3.add(item);
 		item = new JMenuItem("바이러스 분류표");
 		item.addActionListener(this);
 		m3.add(item);
@@ -399,6 +341,13 @@ public class guiAct2 extends JFrame implements ActionListener{
 
 //------------------------------------------------------------------------------------------------------------	
 	//@SuppressWarnings("resource")
+/*
+ * 
+ * makeMenu 상단에 메뉴들 눌렀을 때 작동하는 액션리스너 정의된 부분임 .
+ * 
+ * 
+ * 
+ */
 	public void actionPerformed(ActionEvent e) {  //메뉴에 있는 항목 중 하나를 클릭했을 때// 발생하는 동작을 정의함. 
 		JMenuItem mi = (JMenuItem) (e.getSource()); //메뉴 아이템을 클릭했을때. 	
 		//Connection con = Database_create.makeConnection();        //database클래스의 action()메서드에서 con객체를 전달받아 Connection타입으로 사용한다. 
@@ -431,13 +380,17 @@ public class guiAct2 extends JFrame implements ActionListener{
 				new newWindow();
 				newWindow.area.setText("COVID-19정보");
 				break;
+			case "정부 최신 뉴스":
+				//corona_info();
+				new view_card_news();
+				break;
 			case "바이러스 분류표":
 				new newWindow();
 				newWindow.area.setText("바이러스 분류표");
 				break;
 			case "국내 동향":
-				new newWindow();
-				newWindow.area.setText("국내 동향");
+				new view_card_news();
+//				newWindow.area.setText("국내 동향");
 				break;
 			case "국내 백신":
 				new newWindow();
@@ -478,11 +431,4 @@ public class guiAct2 extends JFrame implements ActionListener{
 			System.out.printf("IOException 예외가 발생했습니다:%s",e1);
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
 }
