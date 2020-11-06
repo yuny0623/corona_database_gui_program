@@ -18,6 +18,8 @@ import java.io.IOException;
 //import java.sql.PreparedStatement;
 //import java.sql.ResultSet;
 //import java.sql.SQLException;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -46,7 +48,7 @@ public class guiAct2 extends JFrame implements ActionListener{
 		//showSouth();
 		//new image_show();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // x를 누르면 바로 종료함. 
-		setSize(1080,720);                              //화면 크기 1080X720 설정  
+		setSize(1080,600);                              //화면 크기 1080X720 설정  
 		setVisible(true);                               //gui창 보이게 함. 
 	}
 	
@@ -119,6 +121,7 @@ public class guiAct2 extends JFrame implements ActionListener{
 	
 	// 프레임의 정중앙에 서울시 이미지를 출력하는 메서드 입니다. 
 	void show_image_center() {
+
 		add(new MyPanel("C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\map.png"));
 	}
 	
@@ -475,4 +478,11 @@ public class guiAct2 extends JFrame implements ActionListener{
 			System.out.printf("IOException 예외가 발생했습니다:%s",e1);
 		}
 	}
+	
+	
+	
+	
+	
+	
+	
 }
