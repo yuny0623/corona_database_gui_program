@@ -4,20 +4,9 @@ import java.sql.Connection;
 public class corona_main {
 
 	public static void main(String[] args) {
-		
-		
 		new login_menu(); //로그인 메뉴창 생성하기./ 여기서 통과해야. 즉 아이디랑 비번이 맞아야 프로그램이 실행된다. 
-
-
 	}
 }
-
-//if (s.var == 1) {
-//System.out.println(s.var);
-//System.out.println("ok to go");
-//new guiAct2(); //gui창을 생성하는 클래스의 생성자입니다. 
-//}	
-
 
 
 //일반 이용자 모드 사용할 건지. 아니면, 관리자 이용할 건지 선택하는 창 뜨게 하기. 
