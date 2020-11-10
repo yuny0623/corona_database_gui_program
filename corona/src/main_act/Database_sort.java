@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Stack;
-import java.util.Stack;
+//import java.util.Stack;
 //스택으로 해당 데이터의 모든 데이터를 받는다. 
 public class Database_sort {
 	public Stack<String> sort_1() {// 1번 즉 연번 year_number에 관한 데이터를 Stack<String>에 할당한다. 1~14번 exposure 까지 같은 방식이다. 

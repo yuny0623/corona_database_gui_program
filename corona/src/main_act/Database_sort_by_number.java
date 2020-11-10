@@ -11,7 +11,7 @@ public class Database_sort_by_number {
 			s = new Database_sort().sort_1(); //Database_sort내에 있는 메소드 들중에서 각 번호에 해당하는 메소드를 생성한다. //전체데이터를 받아온다고 생각 ㄱ
 			sb.setLength(0);                  // StringBuildeer sb는 static 참조변수이다. 따라서 매번 새로운 동작을 실행할때마다 그 값을 초기화해줘야 한다.  
 			while(!s.empty()) {
-				sb.append(s.pop()+""); //StringBuilder의 sb에 s.pop한 값을 저장한다. 
+				sb.append(s.pop()+"\n"); //StringBuilder의 sb에 s.pop한 값을 저장한다. 
 				//System.out.println(s.pop());//해당스택에서 뽑힌 값을 출력한다.	
 			}
 		}
@@ -98,7 +98,7 @@ public class Database_sort_by_number {
 	}
 	
 	
-	public static StringBuilder sb_value() {
+	public static StringBuilder give_string_data() {
 		return sb; //StringBuilder의 sb변수를 반환한다. 
 	}
 }
