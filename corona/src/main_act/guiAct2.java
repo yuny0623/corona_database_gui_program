@@ -1,153 +1,99 @@
 package main_act;
 //메인프레임과 함께 gui이벤트를 정의한 클래스입니다. 
 
-
-
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-//import java.sql.Connection;
-//import java.sql.PreparedStatement;
-//import java.sql.ResultSet;
-//import java.sql.SQLException;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 
-import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 @SuppressWarnings("serial")
 public class guiAct2 extends JFrame implements ActionListener{
-
-	static String path = null;  //이미지의 경로 
+	static ImageIcon background_icon,seoul_icon,east_icon,wash_icon; //배경이미지 오른쪽 메뉴들 BACKGROUND에 이미지 삽입해줌.  static으로 해야됨. 그래야 함수에서 사용가능. 
+	static JPanel main_background;
 	
-	//생성자
-	guiAct2(){                                           //guiAct 클래스의 생정자. 
-		setTitle("corona information program");
+	guiAct2(){                                          
+		setTitle("CORONA DESKTOP VIEWER");
 		setLayout(new BorderLayout(10,10));    
 		
-		makeMenu();//makeMenu()메서드 실행 
-		showEast();//프레임 왼쪽에 붙는 예방수칙 텍스트 영역을 만들어내는 showEast메서드 실행 
-		show_image_center(); //서울시 이미지를 프레임의 중앙에 표시하는 메서드  
-		//showSouth();
-		//new image_show();
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // x를 누르면 바로 종료함. 
-		setSize(1080,600);                              //화면 크기 1080X720 설정  
-		setVisible(true);                               //gui창 보이게 함. 
-	}
-	
-	//---------------------새로운 창을 만들어서 메뉴의 내용을 출력해준다. database를 확인하기 위한 목적임 ------------------------	
-	//메뉴바에 있는 보기 메뉴를 클릭했을 때 각 메뉴에 따른 내용을 출력해줄 수 있는 내용. switch에서 호출할 클래스임. 
-	//새로운 창을 만들고, 텍스트 영역에 해당하는 데이터값을 표시해준다. 
-		static class newWindow extends JFrame{ //정적 메서드 // 미리 로드시켜놓는다. 
-			JPanel panel;   //다른 메서드에서 사용할 수 있도록 static으로 정의했다.  
-			static JTextArea area; //다른 메서드에서 사용할 수 있도록 static으로 정의했다. 
-			newWindow(){
-				setTitle("해당 내용 출력");
-				setLayout(new BorderLayout(10,10));
-				
-				panel = new JPanel();
-				area = new JTextArea(30,20);
-				area.setText("");
-				area.setEditable(false);
-				area.setForeground(Color.BLUE);			
-				panel.add(area);
-				add(panel,BorderLayout.CENTER);		
-
-				setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //종료할때 이 창만 종료시키고, 자원을 모두 반납한다. 
-				setSize(300,500);
-				setVisible(true);
+		//프레임바 자바 이모티콘 말고, 원하는 이미지로 지정함. 
+		ImageIcon img = new ImageIcon("C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\covid.jpg");
+		setIconImage(img.getImage());
+		
+		
+		background_icon = new ImageIcon("C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\coronavirus-4833754_1280.jpg");
+		main_background = new JPanel() {
+			public void paintComponent(Graphics g) {
+				g.drawImage(background_icon.getImage(),0,0,null);
+				setOpaque(false);
+				super.paintComponent(g);;
 			}
-		}
-		class newWindow_for_button extends JFrame{ //정적 메서드 // 미리 로드시켜놓는다. 
-			JPanel panel;   //다른 메서드에서 사용할 수 있도록 static으로 정의했다.  
-			JTextArea area; //다른 메서드에서 사용할 수 있도록 static으로 정의했다. 
-			JScrollPane scrollPane;
-			newWindow_for_button(int i){  //버튼을 눌렀을 때 사용할 메서드의 생성자 정의이다. 
-
-				setTitle("Data");
-				setLayout(new BorderLayout(10,10));
-				
-				panel = new JPanel();
-				area = new JTextArea(30,20);
-				
-				//String log = Database_sort_by_number.sb_value().toString()	
-				new Database_sort_by_number(i);// int i는 각각 1~14번에 해당하는 번호를 의미한다. Database_sort_by_number에 인수로 전달하고 해당클래스 내부에서
-				//데이터 정렬을 진행한다. 
-				area.setText(Database_sort_by_number.sb_value().toString()); //번호에 따른 정보를 toString으로 가져온다. 
-				area.setEditable(false);
-				area.setForeground(Color.BLUE);		
-				scrollPane = new JScrollPane(area);
-				//panel.add(scrollPane);
-				panel.add(area);
-				add(panel,BorderLayout.CENTER);		
-
-				setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //종료할때 이 창만 종료시키고, 자원을 모두 반납한다. 
-				setSize(300,500);
-				setVisible(true);
+		}; 
+		main_background.setLayout(null);  //절대 위치로 지정하기 위해 layout을 null로 줬다. 
+		 
+		show_image_center();
+		showEast();
+		makeMenu();
+		wash_image();
+		
+		add(main_background);
+		dispose();
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(1180,620);                             
+		setVisible(true);                              
+	}
+	
+	static void show_image_center() {
+		seoul_icon = new ImageIcon("C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\map2.png");
+		JPanel seoul_background = new JPanel() {
+			public void paintComponent(Graphics g) {
+				g.drawImage(seoul_icon.getImage(),0,0,null);
+				setOpaque(false);
+				super.paintComponent(g);;
 			}
+		};
 
-		}
-	//---------------------새로운 창을 만들어서 메뉴의 내용을 출력해준다. database를 확인하기 위한 목적임 ------------------------
-
-	class MyPanel extends JPanel{ // 이미지를 생성하는 클래스 new Mypanel(s) 이때 s 경로에 path 값을 써주면 됩니다. 
-		BufferedImage img;
-		public MyPanel(String s) {
-			try {
-				img = ImageIO.read(new File(s));
-			}catch(IOException e) {}
-		}
-		public void paintComponent(Graphics g) {
-			super.paintComponent(g);
-			g.drawImage(img,0,0,getWidth(),getHeight(),null);
-		}
+		seoul_background.setPreferredSize(new Dimension(400,400));      //panel 사이즈를 임의로 지정함. 
+		seoul_background.setBounds(30,30,500,500);                      //패널의 절대위치와 사이즈를 지정함. 
+		main_background.add(seoul_background);
 	}
 	
-	// 프레임의 정중앙에 서울시 이미지를 출력하는 메서드 입니다. 
-	void show_image_center() {
-
-		add(new MyPanel("C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\map.png"));
+	void wash_image() {
+		wash_icon = new ImageIcon("C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\how2.jpg");
+		JPanel wash_background = new JPanel() {
+			public void paintComponent(Graphics g) {
+				g.drawImage(wash_icon.getImage(),0,0,null);
+				setOpaque(false);
+				super.paintComponent(g);;
+			}
+		};
+//		wash_background.setPreferredSize(new Dimension(50,50));      
+		wash_background.setBounds(890,30,250,500); //990 30 / 326 800                    
+		main_background.add(wash_background);
 	}
 	
-	//예방 수칙 패널에 담아 출력 하기 
 	void showEast() {
-		
-		JPanel panel_east_main = new JPanel();   //프레임에 부착할 메인 패널을 생성한다. 
-		
-		JPanel panel_east_top = new JPanel();//메인 패널에 부착할 우측 상단의 패널을 생성함,. 
-		JPanel panel_east_center = new JPanel();//메인 패널에 부착할 우측 중앙의 패널을 생성한다. 
-		JPanel panel_east_bottom = new JPanel(); //메인 패널의 우측 하단에 부착할 패널을 생성함. 
-		JTextArea area1 = new JTextArea(30,40);  //텍스트 영역을 생성한다, 
-		//JTextArea area2 = new JTextArea(30,40);  //텍스트 영역을 생성한다,. 
-		
-		JCheckBox cb1 = new JCheckBox("발열"); //체크박스를 생성한다. 코로나 진단 검사를 간단하게 실시해주는 체크박스이다. 
-		cb1.setBounds(100,100,150,20);
-		panel_east_center.add(cb1);
-		
-		JButton btn1 = new JButton("연번"); //1~14번에 해당하는 버튼을 정의한다. 
+		JButton btn1 = new JButton("연번");
 		JButton btn2 = new JButton("확진일");
 		JButton btn3 = new JButton("환자번호");
 		JButton btn4 = new JButton("국적");
 		JButton btn5 = new JButton("환자정보");
 		JButton btn6 = new JButton("지역");
 		JButton btn7 = new JButton("여행력");
-		JButton btn8 = new JButton("접촐력");
+		JButton btn8 = new JButton("접촉력");
 		JButton btn9 = new JButton("조치사항");
 		JButton btn10 = new JButton("상태");
 		JButton btn11 = new JButton("이동경로");
@@ -155,40 +101,52 @@ public class guiAct2 extends JFrame implements ActionListener{
 		JButton btn13 = new JButton("수정일");
 		JButton btn14 = new JButton("노출여부");
 		
-		panel_east_bottom.setLayout(new GridLayout(0,2)); //우측 하단의 패널의 정렬릉ㄹ 3열로 정의한다. 
-		panel_east_main.setLayout(new GridLayout(0,1));  //메인 패널의 정렬을 gridlayout으로 한다. 1열을 생성한다. 
-		
+		JTextArea area1 = new JTextArea(30,40);
 		area1.setText("1. 흐르는 물에 비누로 손을 꼼꼼하게 씻기. \n"         
-					+ "2. 기침이나 재채기 할 때 옷소매로 입과 코를 가리기.\n"
-					+ "3. 씻지 않은 손으로 눈,코,입 만지지 않기.\n"
-					+ "4. 사람 많은 곳에 방문을 자제하고 의료기관 방문 시 마스크 착용. \n"
-					+ "5. 발열 호흡기 증상이 있는 사람과 접촉 피하기. \n"
-					+ "\n"
-					+ "콜센터: 1339 \n"
-					+ "지역번호+129 \n"
-					+ "보건소 문의, 선별진료소 우선 방문 진료 \n");
+				+ "2. 기침이나 재채기 할 때 옷소매로 입과 코를 가리기.\n"
+				+ "3. 씻지 않은 손으로 눈,코,입 만지지 않기.\n"
+				+ "4. 사람 많은 곳에 방문을 자제하고 의료기관 방문 시 마스크 착용. \n"
+				+ "5. 발열 호흡기 증상이 있는 사람과 접촉 피하기. \n"
+				+ "\n"
+				+ "콜센터: 1339 \n"
+				+ "지역번호+129 \n"
+				+ "보건소 문의, 선별진료소 우선 방문 진료 \n");
 		area1.setEditable(false);        
 		area1.setForeground(Color.BLUE);
-
-		//area2.setText("for image space");
-		//area2.setEditable(false);
-		//area2.setForeground(Color.BLUE);
+		area1.setBounds(560,30,300,175);
 		
-		panel_east_bottom.add(btn1);
-		panel_east_bottom.add(btn2);
-		panel_east_bottom.add(btn3);
-		panel_east_bottom.add(btn4);
-		panel_east_bottom.add(btn5);
-		panel_east_bottom.add(btn6);
-		panel_east_bottom.add(btn7);
-		panel_east_bottom.add(btn8);
-		panel_east_bottom.add(btn9);
-		panel_east_bottom.add(btn10);
-		panel_east_bottom.add(btn11);
-		panel_east_bottom.add(btn12);
-		panel_east_bottom.add(btn13);
-		panel_east_bottom.add(btn14);
-//		JButton btn1 = (JButton) (e.getSource());    // 버튼을 클릭했을 때 동작을 정의한다. 
+		btn1.setBounds(560,235,100,30);
+		btn2.setBounds(670,235,100,30);
+		btn3.setBounds(560,275,100,30);
+		btn4.setBounds(670,275,100,30);
+		btn5.setBounds(560,315,100,30);
+		btn6.setBounds(670,315,100,30);
+		btn7.setBounds(560,355,100,30);
+		btn8.setBounds(670,355,100,30);
+		btn9.setBounds(560,395,100,30);
+		btn10.setBounds(670,395,100,30);
+		btn11.setBounds(560,435,100,30);
+		btn12.setBounds(670,435,100,30);
+		btn13.setBounds(560,475,100,30);
+		btn14.setBounds(670,475,100,30);
+		
+		main_background.add(btn1);
+		main_background.add(btn2);
+		main_background.add(btn3);
+		main_background.add(btn4);
+		main_background.add(btn5);
+		main_background.add(btn6);
+		main_background.add(btn7);
+		main_background.add(btn8);
+		main_background.add(btn9);
+		main_background.add(btn10);
+		main_background.add(btn11);
+		main_background.add(btn12);
+		main_background.add(btn13);
+		main_background.add(btn14);
+		
+		main_background.add(area1);
+		
 		ActionListener l = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JButton btn = (JButton) (e.getSource());
@@ -254,7 +212,6 @@ public class guiAct2 extends JFrame implements ActionListener{
 			}
 		};
 		
-		
 		btn1.addActionListener(l);
 		btn2.addActionListener(l);
 		btn3.addActionListener(l);
@@ -269,16 +226,10 @@ public class guiAct2 extends JFrame implements ActionListener{
 		btn12.addActionListener(l);
 		btn13.addActionListener(l);
 		btn14.addActionListener(l);
-
-
-
-		panel_east_top.add(area1);                 //우측상단 패널에 area1 텍스트영역을 부착한다. 
-		panel_east_main.add(panel_east_top);       //메인 패널에 우측상단 패널을 부착한다. 
-		panel_east_main.add(panel_east_center);    //메인 패널에 우측중앙에 부착한다. 
-		panel_east_main.add(panel_east_bottom);    //메인 패널에 우측하단 패널을 부착한다. 
-		
-		add(panel_east_main,BorderLayout.EAST);    //메인 프레임에 패널을 부착한다. 
-	}
+		}
+	
+	
+	
 	
 	void makeMenu() {    //메뉴바를 생성하고 세부 사항을 생성하는 메서드입니다. 
 		JMenuItem item;
@@ -289,7 +240,6 @@ public class guiAct2 extends JFrame implements ActionListener{
 		JMenu m3 = new JMenu("코로나 정보");
 		JMenu m4 = new JMenu("더 많은 정보");
 		
-//-----------------------ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-------------------------	
 		item = new JMenuItem("프로그램 설명");
 		item.addActionListener(this);
 		m0.add(item);
@@ -302,18 +252,17 @@ public class guiAct2 extends JFrame implements ActionListener{
 		item = new JMenuItem("개발자 정보");
 		item.addActionListener(this);
 		m0.add(item);
-//-----------------------ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-------------------------
+
 		item = new JMenuItem("텍스트 데이터 열기");
 		item.addActionListener(this);
 		m1.add(item);
 		item = new JMenuItem("파일 저장");
 		item.addActionListener(this);
 		m1.add(item);
-		item = new JMenuItem("종료");
+		//item = new JMenuItem("종료",KeyEvent.VK_F);
 		item.addActionListener(this);
 		m1.add(item);
-//-------------------------ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ-------------------------	
-//--------------------------ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ---------------------------
+
 		item = new JMenuItem("year_number출력");
 		item.addActionListener(this);
 		m2.add(item);
@@ -356,8 +305,11 @@ public class guiAct2 extends JFrame implements ActionListener{
 		item = new JMenuItem("execute출력");
 		item.addActionListener(this);
 		m2.add(item);
-//-------------------------ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ--------------------------			
+	
 		item = new JMenuItem("COVID-19정보");
+		item.addActionListener(this);
+		m3.add(item);
+		item = new JMenuItem("정부 최신 뉴스");
 		item.addActionListener(this);
 		m3.add(item);
 		item = new JMenuItem("바이러스 분류표");
@@ -369,10 +321,7 @@ public class guiAct2 extends JFrame implements ActionListener{
 		item = new JMenuItem("국내 백신");
 		item.addActionListener(this);
 		m3.add(item);
-		
-		
-		
-		
+			
 		item = new JMenuItem("해외 코로나 정보");
 		item.addActionListener(this);
 		m4.add(item);
@@ -385,9 +334,7 @@ public class guiAct2 extends JFrame implements ActionListener{
 		item = new JMenuItem("해외 백신 정보");
 		item.addActionListener(this);
 		m4.add(item);
-		
 			
-		
 		mb.add(m0);
 		mb.add(m1);
 		mb.add(m2);
@@ -396,20 +343,16 @@ public class guiAct2 extends JFrame implements ActionListener{
 		
 		setJMenuBar(mb);
 	}
-
-//------------------------------------------------------------------------------------------------------------	
-	//@SuppressWarnings("resource")
-	public void actionPerformed(ActionEvent e) {  //메뉴에 있는 항목 중 하나를 클릭했을 때// 발생하는 동작을 정의함. 
-		JMenuItem mi = (JMenuItem) (e.getSource()); //메뉴 아이템을 클릭했을때. 	
-		//Connection con = Database_create.makeConnection();        //database클래스의 action()메서드에서 con객체를 전달받아 Connection타입으로 사용한다. 
+	
+	
+	public void actionPerformed(ActionEvent e) { 
+		JMenuItem mi = (JMenuItem) (e.getSource()); 
 		System.out.println("2");
-		try { //SQLException 으로 예외처리문을 만든다. 해당 
+		try { 
 			
-			System.out.println("3");		
-	//각 이벤트에 따른 실행문을 case로 나눔. 	
+			System.out.println("메뉴바 리스너 정상적으로 작동됩니다.");		
 			switch(mi.getText()) {
 			case "프로그램 설명":
-				//corona_info();
 				new newWindow();
 				newWindow.area.setText("프로그램 설명");
 				break;
@@ -427,9 +370,11 @@ public class guiAct2 extends JFrame implements ActionListener{
 				break;
 			
 			case "COVID-19정보":
-				//corona_info();
 				new newWindow();
 				newWindow.area.setText("COVID-19정보");
+				break;
+			case "정부 최신 뉴스":
+				new newWindow();
 				break;
 			case "바이러스 분류표":
 				new newWindow();
@@ -467,10 +412,10 @@ public class guiAct2 extends JFrame implements ActionListener{
 				break;
 			case "파일 저장":
 				new newWindow();
-				newWindow.area.setText("파일 저장");
+				newWindow.area.setText("아직 구현되지 않았습니다.");
 				break;
 			case "종료":
-				System.exit(0);//종료 누르면 프로그램 종료합니다. 
+				System.exit(0);
 				break;	
 		}
 		}catch (IOException e1) { //desktop을 통해  메모장을 실행할 경우에 발생할 수 있는 예외를 처리합니다. 
@@ -478,11 +423,4 @@ public class guiAct2 extends JFrame implements ActionListener{
 			System.out.printf("IOException 예외가 발생했습니다:%s",e1);
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
 }

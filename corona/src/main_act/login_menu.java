@@ -14,15 +14,22 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 //로그인창 만들어주기 
 public class login_menu extends JFrame{
+	private static final long serialVersionUID = 2252925102404105719L;
 	ImageIcon icon;   //background 생성해줄 이미지아이콘 생성하기. 
 	
 	login_menu(){
 		setTitle("CORONA PROGRAM");
-		//setLayout(new BorderLayout(10,10));
-		setLocation(450,200);                  //초기 위치 설정해주기 .
+		//프레임바 자바 이모티콘 말고, 원하는 이미지로 지정함. 
+		ImageIcon img = new ImageIcon("C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\covid.jpg");
+		setIconImage(img.getImage());
 		
+		setLocation(450,200);                  //초기 위치 설정해주기 .
+		//"C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\virus-4835301_640.jpg"
 		//백그라운드 이미지 생성해주기. 
-		icon = new ImageIcon("C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\coronavirus-4833754_640.jpg");
+//		icon = new ImageIcon(getClass().getResource("/src/images2/virus-4835301_640.jpg"));
+		//coronavirus-4924022_1280.jpg
+		icon = new ImageIcon("C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\virus-4835301_640.jpg");
+		@SuppressWarnings("serial")
 		JPanel background = new JPanel() {
 			public void paintComponent(Graphics g) {
 				g.drawImage(icon.getImage(),0,0,null);
@@ -30,9 +37,7 @@ public class login_menu extends JFrame{
 				super.paintComponent(g);
 			}
 		};
-		
-		
-		
+
 		
 		JPanel info_panel = new JPanel(new GridLayout(2,0));
 		JPanel id_panel = new JPanel();
@@ -54,24 +59,40 @@ public class login_menu extends JFrame{
 		background.add(info_panel,BorderLayout.NORTH); //JFrame에 붙이는게 아니라 최종적으로 background 에 붙인다. 
 		
 		JButton login_button = new JButton("login");
+		JButton master = new JButton("master"); //임시로 만들어놓았습니다. 바로 프로그램 사용하기 위해서 
+		master.setVisible(false);               //일단 처음에는 안보이게 설정. 아무나 막 들어가면 안되니까. 
+		
 		JPanel login_panel = new JPanel();
 		login_panel.add(login_button);
+		login_panel.add(master);                //임시로 만들어놓았습니다. 바로 프로그램 사용하기 위해서 
 		background.add(login_panel,BorderLayout.CENTER);
 		
 		JPanel bottom_panel = new JPanel();
 		JTextField bottom_text = new JTextField(30);
+		bottom_text.setEditable(false);
 		bottom_panel.add(bottom_text);
 		background.add(bottom_panel,BorderLayout.SOUTH);
 		
 		bottom_text.setText("Check Command Line in here"); //바닥 텍스트 초기화시켜주기
 		
+		JButton git_link = new JButton("Go to github opensource project"); //깃허브 PUBLIC으로 되어있으야 들어갈 수 있음 ㅇㅋ?
+		background.add(git_link);
+		
 		ActionListener l = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("login 버튼이 눌렸습니다.");
+				System.out.println("login 창에서 액션리스너가 정상 작동중입니다. ");
 				String id = id_text.getText();
 				String pass = pass_text.getText();
 				System.out.println(id+" and "+pass);
-
+				
+				if(e.getSource() == master) {
+					new guiAct2();
+				}
+				
+				if(e.getSource() == git_link) {//만약 로그인 창에서 깃허브로 가는 버튼을 클릭하면 github_link() 를 호출한다. 
+					new github_link();         //클래스 호출하면서 깃허브로 이동하기 ! 
+				}
+				
 				if((id.equals("root")) && (pass.equals("password"))) {
 					bottom_text.setText("프로그램을 실행합니다.");
 					
@@ -79,7 +100,7 @@ public class login_menu extends JFrame{
 					Thread.sleep(1000);} //잠시 일시정지함. 이거 사용하려면 예외처리구문 필요함. 
 					catch(InterruptedException e_sleep){}
 					
-					dispose();     //지금 이 창만 사라진다. 
+					//dispose();     //지금 이 창만 사라진다. 
 					new guiAct2(); //gui창을 생성하는 클래스의 생성자입니다. 
 				}
 				if(id_text.getText().isEmpty() || pass_text.getText().isEmpty()) { //비어있으면. 
@@ -88,16 +109,21 @@ public class login_menu extends JFrame{
 				if(!id.equals("root") || !pass.equals("password")) { //아이디랑 비번 틀리면ㄱㄱ 
 					bottom_text.setText("ID와 PASSWORD가 틀렸습니다.");
 				}
+				if(id.equals("master")) {
+					master.setVisible(true); //만약에 사용자가 아이디창에 master라고 입력하면 관리자모드로 들어갈 수 있는 버튼을 생성해줌. 
+				}
 			}
 		};
-		login_button.addActionListener(l);
-		add(background);                 //최종적으로 background를 JFrame에 붙인다. 
 		
+		
+		
+		git_link.addActionListener(l);   //깃허브 링크로 이동하게 해주는 버튼을 액션리스너에 등록 
+		login_button.addActionListener(l); 
+		master.addActionListener(l);     //임시로 만들었습니다. 디버그 모드임. 마스터키
+		
+		add(background);                 //최종적으로 background를 JFrame에 붙인다. 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(400,250);
 		setVisible(true);
 	}
 }
-
-
-
