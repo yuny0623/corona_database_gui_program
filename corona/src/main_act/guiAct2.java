@@ -1,259 +1,216 @@
 package main_act;
-//¸ŞÀÎÇÁ·¹ÀÓ°ú ÇÔ²² guiÀÌº¥Æ®¸¦ Á¤ÀÇÇÑ Å¬·¡½ºÀÔ´Ï´Ù. 
-
-
+//ë©”ì¸í”„ë ˆì„ê³¼ í•¨ê»˜ guiì´ë²¤íŠ¸ë¥¼ ì •ì˜í•œ í´ë˜ìŠ¤ì…ë‹ˆë‹¤. 
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-//import java.sql.Connection;
-//import java.sql.PreparedStatement;
-//import java.sql.ResultSet;
-//import java.sql.SQLException;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 
-import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 @SuppressWarnings("serial")
 public class guiAct2 extends JFrame implements ActionListener{
-
-	static String path = null;  //ÀÌ¹ÌÁöÀÇ °æ·Î 
+	static ImageIcon background_icon,seoul_icon,east_icon,wash_icon; //ë°°ê²½ì´ë¯¸ì§€ ì˜¤ë¥¸ìª½ ë©”ë‰´ë“¤ BACKGROUNDì— ì´ë¯¸ì§€ ì‚½ì…í•´ì¤Œ.  staticìœ¼ë¡œ í•´ì•¼ë¨. ê·¸ë˜ì•¼ í•¨ìˆ˜ì—ì„œ ì‚¬ìš©ê°€ëŠ¥. 
+	static JPanel main_background;
 	
-	//»ı¼ºÀÚ
-	guiAct2(){                                           //guiAct Å¬·¡½ºÀÇ »ıÁ¤ÀÚ. 
-		setTitle("corona information program");
+	guiAct2(){                                          
+		setTitle("CORONA DESKTOP VIEWER");
 		setLayout(new BorderLayout(10,10));    
 		
-		makeMenu();//makeMenu()¸Ş¼­µå ½ÇÇà 
-		showEast();//ÇÁ·¹ÀÓ ¿ŞÂÊ¿¡ ºÙ´Â ¿¹¹æ¼öÄ¢ ÅØ½ºÆ® ¿µ¿ªÀ» ¸¸µé¾î³»´Â showEast¸Ş¼­µå ½ÇÇà 
-		show_image_center(); //¼­¿ï½Ã ÀÌ¹ÌÁö¸¦ ÇÁ·¹ÀÓÀÇ Áß¾Ó¿¡ Ç¥½ÃÇÏ´Â ¸Ş¼­µå  
-		//showSouth();
-		//new image_show();
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // x¸¦ ´©¸£¸é ¹Ù·Î Á¾·áÇÔ. 
-		setSize(1080,600);                              //È­¸é Å©±â 1080X720 ¼³Á¤  
-		setVisible(true);                               //guiÃ¢ º¸ÀÌ°Ô ÇÔ. 
-	}
-	
-	//---------------------»õ·Î¿î Ã¢À» ¸¸µé¾î¼­ ¸Ş´ºÀÇ ³»¿ëÀ» Ãâ·ÂÇØÁØ´Ù. database¸¦ È®ÀÎÇÏ±â À§ÇÑ ¸ñÀûÀÓ ------------------------	
-	//¸Ş´º¹Ù¿¡ ÀÖ´Â º¸±â ¸Ş´º¸¦ Å¬¸¯ÇßÀ» ¶§ °¢ ¸Ş´º¿¡ µû¸¥ ³»¿ëÀ» Ãâ·ÂÇØÁÙ ¼ö ÀÖ´Â ³»¿ë. switch¿¡¼­ È£ÃâÇÒ Å¬·¡½ºÀÓ. 
-	//»õ·Î¿î Ã¢À» ¸¸µé°í, ÅØ½ºÆ® ¿µ¿ª¿¡ ÇØ´çÇÏ´Â µ¥ÀÌÅÍ°ªÀ» Ç¥½ÃÇØÁØ´Ù. 
-		static class newWindow extends JFrame{ //Á¤Àû ¸Ş¼­µå // ¹Ì¸® ·Îµå½ÃÄÑ³õ´Â´Ù. 
-			JPanel panel;   //´Ù¸¥ ¸Ş¼­µå¿¡¼­ »ç¿ëÇÒ ¼ö ÀÖµµ·Ï staticÀ¸·Î Á¤ÀÇÇß´Ù.  
-			static JTextArea area; //´Ù¸¥ ¸Ş¼­µå¿¡¼­ »ç¿ëÇÒ ¼ö ÀÖµµ·Ï staticÀ¸·Î Á¤ÀÇÇß´Ù. 
-			newWindow(){
-				setTitle("ÇØ´ç ³»¿ë Ãâ·Â");
-				setLayout(new BorderLayout(10,10));
-				
-				panel = new JPanel();
-				area = new JTextArea(30,20);
-				area.setText("");
-				area.setEditable(false);
-				area.setForeground(Color.BLUE);			
-				panel.add(area);
-				add(panel,BorderLayout.CENTER);		
-
-				setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //Á¾·áÇÒ¶§ ÀÌ Ã¢¸¸ Á¾·á½ÃÅ°°í, ÀÚ¿øÀ» ¸ğµÎ ¹İ³³ÇÑ´Ù. 
-				setSize(300,500);
-				setVisible(true);
+		//í”„ë ˆì„ë°” ìë°” ì´ëª¨í‹°ì½˜ ë§ê³ , ì›í•˜ëŠ” ì´ë¯¸ì§€ë¡œ ì§€ì •í•¨. 
+		ImageIcon img = new ImageIcon("C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\covid.jpg");
+		setIconImage(img.getImage());
+		
+		
+		background_icon = new ImageIcon("C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\coronavirus-4833754_1280.jpg");
+		main_background = new JPanel() {
+			public void paintComponent(Graphics g) {
+				g.drawImage(background_icon.getImage(),0,0,null);
+				setOpaque(false);
+				super.paintComponent(g);;
 			}
-		}
-		class newWindow_for_button extends JFrame{ //Á¤Àû ¸Ş¼­µå // ¹Ì¸® ·Îµå½ÃÄÑ³õ´Â´Ù. 
-			JPanel panel;   //´Ù¸¥ ¸Ş¼­µå¿¡¼­ »ç¿ëÇÒ ¼ö ÀÖµµ·Ï staticÀ¸·Î Á¤ÀÇÇß´Ù.  
-			JTextArea area; //´Ù¸¥ ¸Ş¼­µå¿¡¼­ »ç¿ëÇÒ ¼ö ÀÖµµ·Ï staticÀ¸·Î Á¤ÀÇÇß´Ù. 
-			JScrollPane scrollPane;
-			newWindow_for_button(int i){  //¹öÆ°À» ´­·¶À» ¶§ »ç¿ëÇÒ ¸Ş¼­µåÀÇ »ı¼ºÀÚ Á¤ÀÇÀÌ´Ù. 
-
-				setTitle("Data");
-				setLayout(new BorderLayout(10,10));
-				
-				panel = new JPanel();
-				area = new JTextArea(30,20);
-				
-				//String log = Database_sort_by_number.sb_value().toString()	
-				new Database_sort_by_number(i);// int i´Â °¢°¢ 1~14¹ø¿¡ ÇØ´çÇÏ´Â ¹øÈ£¸¦ ÀÇ¹ÌÇÑ´Ù. Database_sort_by_number¿¡ ÀÎ¼ö·Î Àü´ŞÇÏ°í ÇØ´çÅ¬·¡½º ³»ºÎ¿¡¼­
-				//µ¥ÀÌÅÍ Á¤·ÄÀ» ÁøÇàÇÑ´Ù. 
-				area.setText(Database_sort_by_number.sb_value().toString()); //¹øÈ£¿¡ µû¸¥ Á¤º¸¸¦ toStringÀ¸·Î °¡Á®¿Â´Ù. 
-				area.setEditable(false);
-				area.setForeground(Color.BLUE);		
-				scrollPane = new JScrollPane(area);
-				//panel.add(scrollPane);
-				panel.add(area);
-				add(panel,BorderLayout.CENTER);		
-
-				setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //Á¾·áÇÒ¶§ ÀÌ Ã¢¸¸ Á¾·á½ÃÅ°°í, ÀÚ¿øÀ» ¸ğµÎ ¹İ³³ÇÑ´Ù. 
-				setSize(300,500);
-				setVisible(true);
+		}; 
+		main_background.setLayout(null);  //ì ˆëŒ€ ìœ„ì¹˜ë¡œ ì§€ì •í•˜ê¸° ìœ„í•´ layoutì„ nullë¡œ ì¤¬ë‹¤. 
+		 
+		show_image_center();
+		showEast();
+		makeMenu();
+		wash_image();
+		
+		add(main_background);
+		dispose();
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(1180,620);                             
+		setVisible(true);                              
+	}
+	
+	static void show_image_center() {
+		seoul_icon = new ImageIcon("C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\map2.png");
+		JPanel seoul_background = new JPanel() {
+			public void paintComponent(Graphics g) {
+				g.drawImage(seoul_icon.getImage(),0,0,null);
+				setOpaque(false);
+				super.paintComponent(g);;
 			}
+		};
 
-		}
-	//---------------------»õ·Î¿î Ã¢À» ¸¸µé¾î¼­ ¸Ş´ºÀÇ ³»¿ëÀ» Ãâ·ÂÇØÁØ´Ù. database¸¦ È®ÀÎÇÏ±â À§ÇÑ ¸ñÀûÀÓ ------------------------
-
-	class MyPanel extends JPanel{ // ÀÌ¹ÌÁö¸¦ »ı¼ºÇÏ´Â Å¬·¡½º new Mypanel(s) ÀÌ¶§ s °æ·Î¿¡ path °ªÀ» ½áÁÖ¸é µË´Ï´Ù. 
-		BufferedImage img;
-		public MyPanel(String s) {
-			try {
-				img = ImageIO.read(new File(s));
-			}catch(IOException e) {}
-		}
-		public void paintComponent(Graphics g) {
-			super.paintComponent(g);
-			g.drawImage(img,0,0,getWidth(),getHeight(),null);
-		}
+		seoul_background.setPreferredSize(new Dimension(400,400));      //panel ì‚¬ì´ì¦ˆë¥¼ ì„ì˜ë¡œ ì§€ì •í•¨. 
+		seoul_background.setBounds(30,30,500,500);                      //íŒ¨ë„ì˜ ì ˆëŒ€ìœ„ì¹˜ì™€ ì‚¬ì´ì¦ˆë¥¼ ì§€ì •í•¨. 
+		main_background.add(seoul_background);
 	}
 	
-	// ÇÁ·¹ÀÓÀÇ Á¤Áß¾Ó¿¡ ¼­¿ï½Ã ÀÌ¹ÌÁö¸¦ Ãâ·ÂÇÏ´Â ¸Ş¼­µå ÀÔ´Ï´Ù. 
-	void show_image_center() {
-
-		add(new MyPanel("C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\map.png"));
+	void wash_image() {
+		wash_icon = new ImageIcon("C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\how2.jpg");
+		JPanel wash_background = new JPanel() {
+			public void paintComponent(Graphics g) {
+				g.drawImage(wash_icon.getImage(),0,0,null);
+				setOpaque(false);
+				super.paintComponent(g);;
+			}
+		};
+//		wash_background.setPreferredSize(new Dimension(50,50));      
+		wash_background.setBounds(890,30,250,500); //990 30 / 326 800                    
+		main_background.add(wash_background);
 	}
 	
-	//¿¹¹æ ¼öÄ¢ ÆĞ³Î¿¡ ´ã¾Æ Ãâ·Â ÇÏ±â 
 	void showEast() {
+		JButton btn1 = new JButton("ì—°ë²ˆ");
+		JButton btn2 = new JButton("í™•ì§„ì¼");
+		JButton btn3 = new JButton("í™˜ìë²ˆí˜¸");
+		JButton btn4 = new JButton("êµ­ì ");
+		JButton btn5 = new JButton("í™˜ìì •ë³´");
+		JButton btn6 = new JButton("ì§€ì—­");
+		JButton btn7 = new JButton("ì—¬í–‰ë ¥");
+		JButton btn8 = new JButton("ì ‘ì´‰ë ¥");
+		JButton btn9 = new JButton("ì¡°ì¹˜ì‚¬í•­");
+		JButton btn10 = new JButton("ìƒíƒœ");
+		JButton btn11 = new JButton("ì´ë™ê²½ë¡œ");
+		JButton btn12= new JButton("ë“±ë¡ì¼");
+		JButton btn13 = new JButton("ìˆ˜ì •ì¼");
+		JButton btn14 = new JButton("ë…¸ì¶œì—¬ë¶€");
 		
-		JPanel panel_east_main = new JPanel();   //ÇÁ·¹ÀÓ¿¡ ºÎÂøÇÒ ¸ŞÀÎ ÆĞ³ÎÀ» »ı¼ºÇÑ´Ù. 
-		
-		JPanel panel_east_top = new JPanel();//¸ŞÀÎ ÆĞ³Î¿¡ ºÎÂøÇÒ ¿ìÃø »ó´ÜÀÇ ÆĞ³ÎÀ» »ı¼ºÇÔ,. 
-		JPanel panel_east_center = new JPanel();//¸ŞÀÎ ÆĞ³Î¿¡ ºÎÂøÇÒ ¿ìÃø Áß¾ÓÀÇ ÆĞ³ÎÀ» »ı¼ºÇÑ´Ù. 
-		JPanel panel_east_bottom = new JPanel(); //¸ŞÀÎ ÆĞ³ÎÀÇ ¿ìÃø ÇÏ´Ü¿¡ ºÎÂøÇÒ ÆĞ³ÎÀ» »ı¼ºÇÔ. 
-		JTextArea area1 = new JTextArea(30,40);  //ÅØ½ºÆ® ¿µ¿ªÀ» »ı¼ºÇÑ´Ù, 
-		//JTextArea area2 = new JTextArea(30,40);  //ÅØ½ºÆ® ¿µ¿ªÀ» »ı¼ºÇÑ´Ù,. 
-		
-		JCheckBox cb1 = new JCheckBox("¹ß¿­"); //Ã¼Å©¹Ú½º¸¦ »ı¼ºÇÑ´Ù. ÄÚ·Î³ª Áø´Ü °Ë»ç¸¦ °£´ÜÇÏ°Ô ½Ç½ÃÇØÁÖ´Â Ã¼Å©¹Ú½ºÀÌ´Ù. 
-		cb1.setBounds(100,100,150,20);
-		panel_east_center.add(cb1);
-		
-		JButton btn1 = new JButton("¿¬¹ø"); //1~14¹ø¿¡ ÇØ´çÇÏ´Â ¹öÆ°À» Á¤ÀÇÇÑ´Ù. 
-		JButton btn2 = new JButton("È®ÁøÀÏ");
-		JButton btn3 = new JButton("È¯ÀÚ¹øÈ£");
-		JButton btn4 = new JButton("±¹Àû");
-		JButton btn5 = new JButton("È¯ÀÚÁ¤º¸");
-		JButton btn6 = new JButton("Áö¿ª");
-		JButton btn7 = new JButton("¿©Çà·Â");
-		JButton btn8 = new JButton("Á¢ÃÍ·Â");
-		JButton btn9 = new JButton("Á¶Ä¡»çÇ×");
-		JButton btn10 = new JButton("»óÅÂ");
-		JButton btn11 = new JButton("ÀÌµ¿°æ·Î");
-		JButton btn12= new JButton("µî·ÏÀÏ");
-		JButton btn13 = new JButton("¼öÁ¤ÀÏ");
-		JButton btn14 = new JButton("³ëÃâ¿©ºÎ");
-		
-		panel_east_bottom.setLayout(new GridLayout(0,2)); //¿ìÃø ÇÏ´ÜÀÇ ÆĞ³ÎÀÇ Á¤·Ä¸ª¤© 3¿­·Î Á¤ÀÇÇÑ´Ù. 
-		panel_east_main.setLayout(new GridLayout(0,1));  //¸ŞÀÎ ÆĞ³ÎÀÇ Á¤·ÄÀ» gridlayoutÀ¸·Î ÇÑ´Ù. 1¿­À» »ı¼ºÇÑ´Ù. 
-		
-		area1.setText("1. Èå¸£´Â ¹°¿¡ ºñ´©·Î ¼ÕÀ» ²Ä²ÄÇÏ°Ô ¾Ä±â. \n"         
-					+ "2. ±âÄ§ÀÌ³ª ÀçÃ¤±â ÇÒ ¶§ ¿Ê¼Ò¸Å·Î ÀÔ°ú ÄÚ¸¦ °¡¸®±â.\n"
-					+ "3. ¾ÄÁö ¾ÊÀº ¼ÕÀ¸·Î ´«,ÄÚ,ÀÔ ¸¸ÁöÁö ¾Ê±â.\n"
-					+ "4. »ç¶÷ ¸¹Àº °÷¿¡ ¹æ¹®À» ÀÚÁ¦ÇÏ°í ÀÇ·á±â°ü ¹æ¹® ½Ã ¸¶½ºÅ© Âø¿ë. \n"
-					+ "5. ¹ß¿­ È£Èí±â Áõ»óÀÌ ÀÖ´Â »ç¶÷°ú Á¢ÃË ÇÇÇÏ±â. \n"
-					+ "\n"
-					+ "Äİ¼¾ÅÍ: 1339 \n"
-					+ "Áö¿ª¹øÈ£+129 \n"
-					+ "º¸°Ç¼Ò ¹®ÀÇ, ¼±º°Áø·á¼Ò ¿ì¼± ¹æ¹® Áø·á \n");
+		JTextArea area1 = new JTextArea(30,40);
+		area1.setText("1. íë¥´ëŠ” ë¬¼ì— ë¹„ëˆ„ë¡œ ì†ì„ ê¼¼ê¼¼í•˜ê²Œ ì”»ê¸°. \n"         
+				+ "2. ê¸°ì¹¨ì´ë‚˜ ì¬ì±„ê¸° í•  ë•Œ ì˜·ì†Œë§¤ë¡œ ì…ê³¼ ì½”ë¥¼ ê°€ë¦¬ê¸°.\n"
+				+ "3. ì”»ì§€ ì•Šì€ ì†ìœ¼ë¡œ ëˆˆ,ì½”,ì… ë§Œì§€ì§€ ì•Šê¸°.\n"
+				+ "4. ì‚¬ëŒ ë§ì€ ê³³ì— ë°©ë¬¸ì„ ìì œí•˜ê³  ì˜ë£Œê¸°ê´€ ë°©ë¬¸ ì‹œ ë§ˆìŠ¤í¬ ì°©ìš©. \n"
+				+ "5. ë°œì—´ í˜¸í¡ê¸° ì¦ìƒì´ ìˆëŠ” ì‚¬ëŒê³¼ ì ‘ì´‰ í”¼í•˜ê¸°. \n"
+				+ "\n"
+				+ "ì½œì„¼í„°: 1339 \n"
+				+ "ì§€ì—­ë²ˆí˜¸+129 \n"
+				+ "ë³´ê±´ì†Œ ë¬¸ì˜, ì„ ë³„ì§„ë£Œì†Œ ìš°ì„  ë°©ë¬¸ ì§„ë£Œ \n");
 		area1.setEditable(false);        
 		area1.setForeground(Color.BLUE);
-
-		//area2.setText("for image space");
-		//area2.setEditable(false);
-		//area2.setForeground(Color.BLUE);
+		area1.setBounds(560,30,300,175);
 		
-		panel_east_bottom.add(btn1);
-		panel_east_bottom.add(btn2);
-		panel_east_bottom.add(btn3);
-		panel_east_bottom.add(btn4);
-		panel_east_bottom.add(btn5);
-		panel_east_bottom.add(btn6);
-		panel_east_bottom.add(btn7);
-		panel_east_bottom.add(btn8);
-		panel_east_bottom.add(btn9);
-		panel_east_bottom.add(btn10);
-		panel_east_bottom.add(btn11);
-		panel_east_bottom.add(btn12);
-		panel_east_bottom.add(btn13);
-		panel_east_bottom.add(btn14);
-//		JButton btn1 = (JButton) (e.getSource());    // ¹öÆ°À» Å¬¸¯ÇßÀ» ¶§ µ¿ÀÛÀ» Á¤ÀÇÇÑ´Ù. 
+		btn1.setBounds(560,235,100,30);
+		btn2.setBounds(670,235,100,30);
+		btn3.setBounds(560,275,100,30);
+		btn4.setBounds(670,275,100,30);
+		btn5.setBounds(560,315,100,30);
+		btn6.setBounds(670,315,100,30);
+		btn7.setBounds(560,355,100,30);
+		btn8.setBounds(670,355,100,30);
+		btn9.setBounds(560,395,100,30);
+		btn10.setBounds(670,395,100,30);
+		btn11.setBounds(560,435,100,30);
+		btn12.setBounds(670,435,100,30);
+		btn13.setBounds(560,475,100,30);
+		btn14.setBounds(670,475,100,30);
+		
+		main_background.add(btn1);
+		main_background.add(btn2);
+		main_background.add(btn3);
+		main_background.add(btn4);
+		main_background.add(btn5);
+		main_background.add(btn6);
+		main_background.add(btn7);
+		main_background.add(btn8);
+		main_background.add(btn9);
+		main_background.add(btn10);
+		main_background.add(btn11);
+		main_background.add(btn12);
+		main_background.add(btn13);
+		main_background.add(btn14);
+		
+		main_background.add(area1);
+		
 		ActionListener l = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JButton btn = (JButton) (e.getSource());
 				
 				switch(btn.getText()) {
-				case "¿¬¹ø":
-					new newWindow_for_button(1); //»õ·Î¿î À©µµ¿ì Ã¢À» ¿ÀÇÂÇÑ´Ù. 
-					System.out.println("¿¬¹øÀÌ Å¬¸¯µÇ¾ú½À´Ï´Ù.");
+				case "ì—°ë²ˆ":
+					new newWindow_for_button(1); //ìƒˆë¡œìš´ ìœˆë„ìš° ì°½ì„ ì˜¤í”ˆí•œë‹¤. 
+					System.out.println("ì—°ë²ˆì´ í´ë¦­ë˜ì—ˆìŠµë‹ˆë‹¤.");
 					break;
-				case "È®ÁøÀÏ":
+				case "í™•ì§„ì¼":
 					new newWindow_for_button(2);
-					System.out.println("È®ÁøÀÏÀÌ Å¬¸¯µÇ¾ú½À´Ï´Ù.");
+					System.out.println("í™•ì§„ì¼ì´ í´ë¦­ë˜ì—ˆìŠµë‹ˆë‹¤.");
 					break;
-				case "È¯ÀÚ¹øÈ£":
+				case "í™˜ìë²ˆí˜¸":
 					new newWindow_for_button(3);
-					System.out.println("È¯ÀÚ¹øÈ£ÀÌ Å¬¸¯µÇ¾ú½À´Ï´Ù.");
+					System.out.println("í™˜ìë²ˆí˜¸ì´ í´ë¦­ë˜ì—ˆìŠµë‹ˆë‹¤.");
 					break;
-				case "±¹Àû":
+				case "êµ­ì ":
 					new newWindow_for_button(4);
-					System.out.println("±¹ÀûÀÌ Å¬¸¯µÇ¾ú½À´Ï´Ù.");
+					System.out.println("êµ­ì ì´ í´ë¦­ë˜ì—ˆìŠµë‹ˆë‹¤.");
 					break;
-				case "È¯ÀÚÁ¤º¸":
+				case "í™˜ìì •ë³´":
 					new newWindow_for_button(5);
-					System.out.println("È¯ÀÚÁ¤º¸ÀÌ Å¬¸¯µÇ¾ú½À´Ï´Ù.");
+					System.out.println("í™˜ìì •ë³´ì´ í´ë¦­ë˜ì—ˆìŠµë‹ˆë‹¤.");
 					break;
-				case "Áö¿ª":
+				case "ì§€ì—­":
 					new newWindow_for_button(6);
-					System.out.println("Áö¿ªÀÌ Å¬¸¯µÇ¾ú½À´Ï´Ù.");
+					System.out.println("ì§€ì—­ì´ í´ë¦­ë˜ì—ˆìŠµë‹ˆë‹¤.");
 					break;
-				case "¿©Çà·Â":
+				case "ì—¬í–‰ë ¥":
 					new newWindow_for_button(7);
-					System.out.println("¿©Çà·ÂÀÌ Å¬¸¯µÇ¾ú½À´Ï´Ù.");
+					System.out.println("ì—¬í–‰ë ¥ì´ í´ë¦­ë˜ì—ˆìŠµë‹ˆë‹¤.");
 					break;
-				case "Á¢ÃË·Â":
+				case "ì ‘ì´‰ë ¥":
 					new newWindow_for_button(8);
-					System.out.println("Á¢ÃË·ÂÀÌ Å¬¸¯µÇ¾ú½À´Ï´Ù.");
+					System.out.println("ì ‘ì´‰ë ¥ì´ í´ë¦­ë˜ì—ˆìŠµë‹ˆë‹¤.");
 					break;
-				case "Á¶Ä¡»çÇ×":
+				case "ì¡°ì¹˜ì‚¬í•­":
 					new newWindow_for_button(9);
-					System.out.println("Á¶Ä¡»çÇ×ÀÌ Å¬¸¯µÇ¾ú½À´Ï´Ù.");
+					System.out.println("ì¡°ì¹˜ì‚¬í•­ì´ í´ë¦­ë˜ì—ˆìŠµë‹ˆë‹¤.");
 					break;
-				case "»óÅÂ":
+				case "ìƒíƒœ":
 					new newWindow_for_button(10);
-					System.out.println("»óÅÂÀÌ Å¬¸¯µÇ¾ú½À´Ï´Ù.");
+					System.out.println("ìƒíƒœì´ í´ë¦­ë˜ì—ˆìŠµë‹ˆë‹¤.");
 					break;
-				case "ÀÌµ¿°æ·Î":
+				case "ì´ë™ê²½ë¡œ":
 					new newWindow_for_button(11);
-					System.out.println("ÀÌµ¿°æ·ÎÀÌ Å¬¸¯µÇ¾ú½À´Ï´Ù.");
+					System.out.println("ì´ë™ê²½ë¡œì´ í´ë¦­ë˜ì—ˆìŠµë‹ˆë‹¤.");
 					break;
-				case "µî·ÏÀÏ":
+				case "ë“±ë¡ì¼":
 					new newWindow_for_button(12);
-					System.out.println("µî·ÏÀÏÀÌ Å¬¸¯µÇ¾ú½À´Ï´Ù.");
+					System.out.println("ë“±ë¡ì¼ì´ í´ë¦­ë˜ì—ˆìŠµë‹ˆë‹¤.");
 					break;
-				case "¼öÁ¤ÀÏ":
+				case "ìˆ˜ì •ì¼":
 					new newWindow_for_button(13);
-					System.out.println("¼öÁ¤ÀÏÀÌ Å¬¸¯µÇ¾ú½À´Ï´Ù.");
+					System.out.println("ìˆ˜ì •ì¼ì´ í´ë¦­ë˜ì—ˆìŠµë‹ˆë‹¤.");
 					break;
-				case "³ëÃâ¿©ºÎ":
+				case "ë…¸ì¶œì—¬ë¶€":
 					new newWindow_for_button(14);
-					System.out.println("³ëÃâ¿©ºÎÀÌ Å¬¸¯µÇ¾ú½À´Ï´Ù.");
+					System.out.println("ë…¸ì¶œì—¬ë¶€ì´ í´ë¦­ë˜ì—ˆìŠµë‹ˆë‹¤.");
 					break;	
 				}
 			}
 		};
-		
 		
 		btn1.addActionListener(l);
 		btn2.addActionListener(l);
@@ -269,125 +226,115 @@ public class guiAct2 extends JFrame implements ActionListener{
 		btn12.addActionListener(l);
 		btn13.addActionListener(l);
 		btn14.addActionListener(l);
-
-
-
-		panel_east_top.add(area1);                 //¿ìÃø»ó´Ü ÆĞ³Î¿¡ area1 ÅØ½ºÆ®¿µ¿ªÀ» ºÎÂøÇÑ´Ù. 
-		panel_east_main.add(panel_east_top);       //¸ŞÀÎ ÆĞ³Î¿¡ ¿ìÃø»ó´Ü ÆĞ³ÎÀ» ºÎÂøÇÑ´Ù. 
-		panel_east_main.add(panel_east_center);    //¸ŞÀÎ ÆĞ³Î¿¡ ¿ìÃøÁß¾Ó¿¡ ºÎÂøÇÑ´Ù. 
-		panel_east_main.add(panel_east_bottom);    //¸ŞÀÎ ÆĞ³Î¿¡ ¿ìÃøÇÏ´Ü ÆĞ³ÎÀ» ºÎÂøÇÑ´Ù. 
-		
-		add(panel_east_main,BorderLayout.EAST);    //¸ŞÀÎ ÇÁ·¹ÀÓ¿¡ ÆĞ³ÎÀ» ºÎÂøÇÑ´Ù. 
-	}
+		}
 	
-	void makeMenu() {    //¸Ş´º¹Ù¸¦ »ı¼ºÇÏ°í ¼¼ºÎ »çÇ×À» »ı¼ºÇÏ´Â ¸Ş¼­µåÀÔ´Ï´Ù. 
+	
+	
+	
+	void makeMenu() {    //ë©”ë‰´ë°”ë¥¼ ìƒì„±í•˜ê³  ì„¸ë¶€ ì‚¬í•­ì„ ìƒì„±í•˜ëŠ” ë©”ì„œë“œì…ë‹ˆë‹¤. 
 		JMenuItem item;
 		JMenuBar mb = new JMenuBar();
-		JMenu m0 = new JMenu("ÇÁ·Î±×·¥ Á¤º¸");
-		JMenu m1 = new JMenu("¼³Á¤");
-		JMenu m2 = new JMenu("µ¥ÀÌÅÍº£ÀÌ½º");
-		JMenu m3 = new JMenu("ÄÚ·Î³ª Á¤º¸");
-		JMenu m4 = new JMenu("´õ ¸¹Àº Á¤º¸");
+		JMenu m0 = new JMenu("í”„ë¡œê·¸ë¨ ì •ë³´");
+		JMenu m1 = new JMenu("ì„¤ì •");
+		JMenu m2 = new JMenu("ë°ì´í„°ë² ì´ìŠ¤");
+		JMenu m3 = new JMenu("ì½”ë¡œë‚˜ ì •ë³´");
+		JMenu m4 = new JMenu("ë” ë§ì€ ì •ë³´");
 		
-//-----------------------¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ-------------------------	
-		item = new JMenuItem("ÇÁ·Î±×·¥ ¼³¸í");
+		item = new JMenuItem("í”„ë¡œê·¸ë¨ ì„¤ëª…");
 		item.addActionListener(this);
 		m0.add(item);
-		item = new JMenuItem("°³¹ß È¯°æ");
+		item = new JMenuItem("ê°œë°œ í™˜ê²½");
 		item.addActionListener(this);
 		m0.add(item);
-		item = new JMenuItem("°³¹ß ±â°£");
+		item = new JMenuItem("ê°œë°œ ê¸°ê°„");
 		item.addActionListener(this);
 		m0.add(item);
-		item = new JMenuItem("°³¹ßÀÚ Á¤º¸");
+		item = new JMenuItem("ê°œë°œì ì •ë³´");
 		item.addActionListener(this);
 		m0.add(item);
-//-----------------------¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ-------------------------
-		item = new JMenuItem("ÅØ½ºÆ® µ¥ÀÌÅÍ ¿­±â");
+
+		item = new JMenuItem("í…ìŠ¤íŠ¸ ë°ì´í„° ì—´ê¸°");
 		item.addActionListener(this);
 		m1.add(item);
-		item = new JMenuItem("ÆÄÀÏ ÀúÀå");
+		item = new JMenuItem("íŒŒì¼ ì €ì¥");
 		item.addActionListener(this);
 		m1.add(item);
-		item = new JMenuItem("Á¾·á");
+		//item = new JMenuItem("ì¢…ë£Œ",KeyEvent.VK_F);
 		item.addActionListener(this);
 		m1.add(item);
-//-------------------------¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ-------------------------	
-//--------------------------¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ---------------------------
-		item = new JMenuItem("year_numberÃâ·Â");
+
+		item = new JMenuItem("year_numberì¶œë ¥");
 		item.addActionListener(this);
 		m2.add(item);
-		item = new JMenuItem("confirm_dateÃâ·Â");
+		item = new JMenuItem("confirm_dateì¶œë ¥");
 		item.addActionListener(this);
 		m2.add(item);
-		item = new JMenuItem("patient_numberÃâ·Â");
+		item = new JMenuItem("patient_numberì¶œë ¥");
 		item.addActionListener(this);
 		m2.add(item);
-		item = new JMenuItem("nationÃâ·Â");
+		item = new JMenuItem("nationì¶œë ¥");
 		item.addActionListener(this);
 		m2.add(item);
-		item = new JMenuItem("patient_infoÃâ·Â");
+		item = new JMenuItem("patient_infoì¶œë ¥");
 		item.addActionListener(this);
 		m2.add(item);
-		item = new JMenuItem("locationÃâ·Â");
+		item = new JMenuItem("locationì¶œë ¥");
 		item.addActionListener(this);
 		m2.add(item);
-		item = new JMenuItem("travelÃâ·Â");
+		item = new JMenuItem("travelì¶œë ¥");
 		item.addActionListener(this);
 		m2.add(item);
-		item = new JMenuItem("contactÃâ·Â");
+		item = new JMenuItem("contactì¶œë ¥");
 		item.addActionListener(this);
 		m2.add(item);
-		item = new JMenuItem("actionÃâ·Â");
+		item = new JMenuItem("actionì¶œë ¥");
 		item.addActionListener(this);
 		m2.add(item);
-		item = new JMenuItem("stateÃâ·Â");
+		item = new JMenuItem("stateì¶œë ¥");
 		item.addActionListener(this);
 		m2.add(item);
-		item = new JMenuItem("move_traceÃâ·Â");
+		item = new JMenuItem("move_traceì¶œë ¥");
 		item.addActionListener(this);
 		m2.add(item);
-		item = new JMenuItem("regist_dateÃâ·Â");
+		item = new JMenuItem("regist_dateì¶œë ¥");
 		item.addActionListener(this);
 		m2.add(item);
-		item = new JMenuItem("modify_dateÃâ·Â");
+		item = new JMenuItem("modify_dateì¶œë ¥");
 		item.addActionListener(this);
 		m2.add(item);
-		item = new JMenuItem("executeÃâ·Â");
+		item = new JMenuItem("executeì¶œë ¥");
 		item.addActionListener(this);
 		m2.add(item);
-//-------------------------¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ¤Ñ--------------------------			
-		item = new JMenuItem("COVID-19Á¤º¸");
+	
+		item = new JMenuItem("COVID-19ì •ë³´");
 		item.addActionListener(this);
 		m3.add(item);
-		item = new JMenuItem("¹ÙÀÌ·¯½º ºĞ·ùÇ¥");
+		item = new JMenuItem("ì •ë¶€ ìµœì‹  ë‰´ìŠ¤");
 		item.addActionListener(this);
 		m3.add(item);
-		item = new JMenuItem("±¹³» µ¿Çâ");
+//		item = new JMenuItem("ë°”ì´ëŸ¬ìŠ¤ ë¶„ë¥˜í‘œ");
+//		item.addActionListener(this);
+//		m3.add(item);
+		item = new JMenuItem("êµ­ë‚´ ë™í–¥");
 		item.addActionListener(this);
 		m3.add(item);
-		item = new JMenuItem("±¹³» ¹é½Å");
+		item = new JMenuItem("êµ­ë‚´ ë°±ì‹ ");
 		item.addActionListener(this);
 		m3.add(item);
-		
-		
-		
-		
-		item = new JMenuItem("ÇØ¿Ü ÄÚ·Î³ª Á¤º¸");
-		item.addActionListener(this);
-		m4.add(item);
-		item = new JMenuItem("ÇØ¿Ü ÄÚ·Î³ª »çÀÌÆ®");
-		item.addActionListener(this);
-		m4.add(item);
-		item = new JMenuItem("ÇØ¿Ü ¹ÙÀÌ·¯½º ¹®°Ç");
-		item.addActionListener(this);
-		m4.add(item);
-		item = new JMenuItem("ÇØ¿Ü ¹é½Å Á¤º¸");
-		item.addActionListener(this);
-		m4.add(item);
-		
 			
-		
+		item = new JMenuItem("í•´ì™¸ ì½”ë¡œë‚˜ ì •ë³´");
+		item.addActionListener(this);
+		m4.add(item);
+		item = new JMenuItem("í•´ì™¸ ì½”ë¡œë‚˜ ì‚¬ì´íŠ¸");
+		item.addActionListener(this);
+		m4.add(item);
+//		item = new JMenuItem("í•´ì™¸ ë°”ì´ëŸ¬ìŠ¤ ë¬¸ê±´");
+//		item.addActionListener(this);
+//		m4.add(item);
+		item = new JMenuItem("í•´ì™¸ ë°±ì‹  ì •ë³´");
+		item.addActionListener(this);
+		m4.add(item);
+			
 		mb.add(m0);
 		mb.add(m1);
 		mb.add(m2);
@@ -396,93 +343,151 @@ public class guiAct2 extends JFrame implements ActionListener{
 		
 		setJMenuBar(mb);
 	}
-
-//------------------------------------------------------------------------------------------------------------	
-	//@SuppressWarnings("resource")
-	public void actionPerformed(ActionEvent e) {  //¸Ş´º¿¡ ÀÖ´Â Ç×¸ñ Áß ÇÏ³ª¸¦ Å¬¸¯ÇßÀ» ¶§// ¹ß»ıÇÏ´Â µ¿ÀÛÀ» Á¤ÀÇÇÔ. 
-		JMenuItem mi = (JMenuItem) (e.getSource()); //¸Ş´º ¾ÆÀÌÅÛÀ» Å¬¸¯ÇßÀ»¶§. 	
-		//Connection con = Database_create.makeConnection();        //databaseÅ¬·¡½ºÀÇ action()¸Ş¼­µå¿¡¼­ con°´Ã¼¸¦ Àü´Ş¹Ş¾Æ ConnectionÅ¸ÀÔÀ¸·Î »ç¿ëÇÑ´Ù. 
+	
+	
+	public void actionPerformed(ActionEvent e) { 
+		JMenuItem mi = (JMenuItem) (e.getSource()); 
 		System.out.println("2");
-		try { //SQLException À¸·Î ¿¹¿ÜÃ³¸®¹®À» ¸¸µç´Ù. ÇØ´ç 
+		try { 
 			
-			System.out.println("3");		
-	//°¢ ÀÌº¥Æ®¿¡ µû¸¥ ½ÇÇà¹®À» case·Î ³ª´®. 	
+			System.out.println("ë©”ë‰´ë°” ë¦¬ìŠ¤ë„ˆ ì •ìƒì ìœ¼ë¡œ ì‘ë™ë©ë‹ˆë‹¤.");		
 			switch(mi.getText()) {
-			case "ÇÁ·Î±×·¥ ¼³¸í":
-				//corona_info();
+			case "í”„ë¡œê·¸ë¨ ì„¤ëª…":
 				new newWindow();
-				newWindow.area.setText("ÇÁ·Î±×·¥ ¼³¸í");
+				newWindow.area.setText("ì„œìš¸ì‹œ ì½”ë¡œë‚˜19 í™•ì§„ì í˜„í™© ê´€ë¦¬ í”„ë¡œê·¸ë¨ìœ¼ë¡œ ì½”ë¡œë‚˜19 í™•ì§„ì í˜„í™©ì„\n"
+						+ " ë³´ë‹¤ ì‰½ê²Œ íŒŒì•…í•˜ê³  ê´€ë¦¬í•  ìˆ˜ ìˆê²Œ í•˜ëŠ” ê²ƒì— ì¤‘ì ì„ ë‘” í”„ë¡œê·¸ë¨ì´ë‹¤.");
 				break;
-			case "°³¹ß È¯°æ":
+			case "ê°œë°œ í™˜ê²½":
 				new newWindow();
-				newWindow.area.setText("°³¹ß È¯°æ");
+				newWindow.area.setText("Window 10 OS with eclipse");
 				break;
-			case "°³¹ß ±â°£":
+			case "ê°œë°œ ê¸°ê°„":
 				new newWindow();
-				newWindow.area.setText("°³¹ß ±â°£");
+				newWindow.area.setText("9/29~11/24\r\n" + 
+						"ì•½ 9ì£¼");
 				break;
-			case "°³¹ßÀÚ Á¤º¸":
+			case "ê°œë°œì ì •ë³´":
 				new newWindow();
-				newWindow.area.setText("°³¹ßÀÚ Á¤º¸");
+				newWindow.area.setText("ìµœë³‘ìœ¤, í•œìƒì§„, ê¹€ê²½ë‚¨, ì´í˜„ì„, ì •ë¬¸ê·œ");
 				break;
 			
-			case "COVID-19Á¤º¸":
-				//corona_info();
+			case "COVID-19ì •ë³´":
 				new newWindow();
-				newWindow.area.setText("COVID-19Á¤º¸");
+				newWindow.area.setText("2019ë…„ 12ì›” ì¤‘êµ­ ìš°í•œì—ì„œ ì²˜ìŒ ë°œìƒí•œ ì´í›„ ì¤‘êµ­ ì „ì—­ê³¼ ì „ ì„¸ê³„ë¡œ í™•ì‚°ëœ, \n"
+						+ "ìƒˆë¡œìš´ ìœ í˜•ì˜ ì½”ë¡œë‚˜ë°”ì´ëŸ¬ìŠ¤(SARS-CoV-2)ì— ì˜í•œ í˜¸í¡ê¸° ê°ì—¼ì§ˆí™˜ì´ë‹¤. \n"
+						+ "ì½”ë¡œë‚˜ë°”ì´ëŸ¬ìŠ¤ê°ì—¼ì¦-19ëŠ” ê°ì—¼ìì˜ ë¹„ë§(ì¹¨ë°©ìš¸)ì´ í˜¸í¡ê¸°ë‚˜ ëˆˆÂ·ì½”Â·ì…ì˜ ì ë§‰ìœ¼ë¡œ ì¹¨íˆ¬ë  ë•Œ ì „ì—¼ëœë‹¤. \n"
+						+ "ê°ì—¼ë˜ë©´ ì•½ 2~14ì¼(ì¶”ì •)ì˜ ì ë³µê¸°ë¥¼ ê±°ì¹œ ë’¤ ë°œì—´(37.5ë„) ë° ê¸°ì¹¨ì´ë‚˜ í˜¸í¡ê³¤ë€ ë“± í˜¸í¡ê¸° ì¦ìƒ, \n"
+						+ "íë ´ì´ ì£¼ì¦ìƒìœ¼ë¡œ ë‚˜íƒ€ë‚˜ì§€ë§Œ ë¬´ì¦ìƒ ê°ì—¼ ì‚¬ë¡€ ë¹ˆë„ë„ ë†’ê²Œ ë‚˜ì˜¤ê³  ìˆë‹¤.");
 				break;
-			case "¹ÙÀÌ·¯½º ºĞ·ùÇ¥":
+			case "ì •ë¶€ ìµœì‹  ë‰´ìŠ¤":
 				new newWindow();
-				newWindow.area.setText("¹ÙÀÌ·¯½º ºĞ·ùÇ¥");
+				newWindow.area.setText("2020ë…„ 11ì›” 11ì¼ ê¸°ì¤€\r\n" + 
+						"- ì½”ë¡œë‚˜ ì¬í™•ì‚°ì— 10ì›” ì·¨ì—…ì 6ê°œì›” ë§Œì— ìµœëŒ€ ê°ì†Œ(ì¢…í•©)\r\n" + 
+						"- [ì¢…í•©] ì½”ë¡œë‚˜19 í™•ì§„ì 146ëª… ì¦ê°€, ì„œìš¸ 39ëª…, ê²½ê¸° 42ëª…\r\n" + 
+						"- ì •ë¶€ \"ì½”ë¡œë‚˜ í™•ì‚° ì§€ì†ì‹œ 2~3ì£¼í›„ ìˆ˜ë„ê¶Œ 1.5ë‹¨ê³„ ê²©ìƒ ê°€ëŠ¥ì„±\"");
 				break;
-			case "±¹³» µ¿Çâ":
+//			case "ë°”ì´ëŸ¬ìŠ¤ ë¶„ë¥˜í‘œ":
+//				new newWindow();
+//				newWindow.area.setText("ë°”ì´ëŸ¬ìŠ¤ ë¶„ë¥˜í‘œ");
+//				break;
+			case "êµ­ë‚´ ë™í–¥":
 				new newWindow();
-				newWindow.area.setText("±¹³» µ¿Çâ");
+				newWindow.area.setText("2020ë…„ 11ì›” 11ì¼ ê¸°ì¤€\r\n" + 
+						"11/1 - 97ëª…\r\n" + 
+						"11/2 - 75ëª…\r\n" + 
+						"11/3 - 118ëª…\r\n" + 
+						"11/4 - 125ëª…\r\n" + 
+						"11/5 - 145ëª…\r\n" + 
+						"11/6 - 89ëª…\r\n" + 
+						"11/7 - 143ëª…\r\n" + 
+						"11/8 - 126ëª…\r\n" + 
+						"11/9 - 100ëª…\r\n" + 
+						"11/10 - 146ëª…");
 				break;
-			case "±¹³» ¹é½Å":
+			case "êµ­ë‚´ ë°±ì‹ ":
 				new newWindow();
-				newWindow.area.setText("±¹³» ¹é½Å");
+				newWindow.area.setText("êµ­ë‚´ ê°œë°œë˜ê³  ìˆëŠ” ì½”ë¡œë‚˜19 ë°±ì‹ ê³¼ ì¹˜ë£Œì œì˜ ì„ìƒì‹œí—˜ í˜„í™©ì„ ì‹í’ˆì˜ì•½í’ˆì•ˆì „ì²˜ê°€ 27ì¼ ë³´ê³ í–ˆë‹¤. \n"
+						+ "í˜„ì¬ êµ­ë‚´ì—ì„œ ìŠ¹ì¸í•œ ì„ìƒì‹œí—˜ì€ ì¹˜ë£Œì œ 24ê±´, ë°±ì‹  2ê±´ìœ¼ë¡œ ì´ 26ê±´ì´ë‹¤. \n"
+						+ "ì´ ì¤‘ì— ì¹˜ë£Œì œ ì„ìƒì‹œí—˜ 7ê±´ì´ ì¢…ë£Œë˜ì—ˆê³  í˜„ì¬ ì§„í–‰ ì¤‘ì¸ ì„ìƒì‹œí—˜ì€ ì¹˜ë£Œì œ 17ê±´, ë°±ì‹  2ê±´ìœ¼ë¡œ ì´ 19ê±´ì´ë‹¤. \n"
+						+ "ì¢…ë£Œëœ ì¹˜ë£Œì œ ì„ìƒì€ ë ˜ë°ì‹œë¹„ë¥´ 3ê±´, ì˜¥ì‹œí¬ë¡œë¦°ì •Â·ì¹¼ë ˆíŠ¸ë¼ì •, í• ë¡ì‹ ì •, ë°”ë¦¬ì‹œí‹°ë‹™, í˜ë¡œë”œ ê° 1ê±´ì´ë‹¤. \n"
+						+ "ì§„í–‰ ì¤‘ì¸ ì¹˜ë£Œì œ ì„ìƒ 19ê±´ ì¤‘ ì œì•½ì—…ì²´ê°€ ì§„í–‰í•˜ê³  ìˆëŠ” 16ê±´ê³¼ ì—°êµ¬ìê°€ ì§„í–‰í•˜ê³  ìˆëŠ” 3ê±´ì˜ ì„ìƒì‹œí—˜ì´ ìˆë‹¤. \n"
+						+ "ì œì•½ì—…ì²´ê°€ ì§„í–‰í•˜ëŠ” ì„ìƒì‹œí—˜ì€ 1ìƒ ì„ìƒ 6ê±´ìœ¼ë¡œ í•­ì²´ì¹˜ë£Œì œì™€ DNA ë°±ì‹  ë“±ì´ë©° 2ìƒ ì„ìƒ 8ê±´ì€ í˜ˆì¥ë¶„íšì¹˜ë£Œì œ ë“±ì´ê³ , 3ìƒ ì„ìƒ 2ê±´ì´ ìˆë‹¤. ");
 				break;
 				
-			case "ÇØ¿Ü ÄÚ·Î³ª Á¤º¸":
+			case "í•´ì™¸ ì½”ë¡œë‚˜ ì •ë³´":
 				new newWindow();
-				newWindow.area.setText("ÇØ¿Ü ÄÚ·Î³ª Á¤º¸");
+				newWindow.area.setText("2020ë…„ 11ì›” 11ì¼ ì\r\n" + 
+						"\r\n" + 
+						" ó°š ë¯¸êµ­ \r\n" + 
+						"\r\n" + 
+						"   - 11.9. ë¯¸êµ­ ì œì•½ì‚¬ í™”ì´ì(Pfizer)ëŠ” ë…ì¼ ë°”ì´ì˜¤ì—”í…Œí¬(BioNTech)ì‚¬ì™€ì˜ í•©ì‘ìœ¼ë¡œ ê°œë°œ ì¤‘ì¸ ìì‚¬ ì½”ë¡œë‚˜ 19 ë°±ì‹ ì— ëŒ€í•œ ì œ 1ì°¨ ê³µì‹ ì™¸ë¶€ ë…ë¦½ì „ë¬¸ê°€ë‹¨ì˜ ë°ì´í„° í‰ê°€ ê²°ê³¼, ì½”ë¡œë‚˜19 ê°ì—¼ì„ 90%ì´ìƒ ì˜ˆë°©í•œë‹¤ëŠ” ì„ìƒì‹œí—˜ ì¤‘ê°„ ê²°ê³¼ë¥¼ ë°œí‘œ \r\n" + 
+						"   - í™”ì´ì ì¸¡ì€ ë¯¸ ì‹í’ˆì˜ì•½êµ­(FDA) ì§€ì¹¨ì— ë”°ë¥¸ ìµœì†Œ 2ë‹¬ ë™ì•ˆì˜ ë°±ì‹  ì•ˆì „ì„± ì…ì¦ ë°ì´í„°ì˜ ìˆ˜ì§‘ ì™„ë£Œ ë° ì œì¶œ ì´í›„ ì´ë‹¬ ë§ FDAì— ë°±ì‹  ê¸´ê¸‰ì‚¬ìš©ìŠ¹ì¸ì„ ì‹ ì²­í•  ê³„íšìœ¼ë¡œ, ì—°ë‚´ê¹Œì§€ 1500ë§Œì—ì„œ 2000ë§ŒíšŒë¶„ì˜ ë°±ì‹  ìƒì‚°ì„ ì™„ë£Œí•  ê³„íš\r\n" + 
+						"\r\n" + 
+						"   - ë‰´ìš•íƒ€ì„ìŠ¤ í†µê³„ ìë£Œì— ë”°ë¥´ë©´, 11.8. ë¯¸êµ­ ë‚´ ì½”ë¡œë‚˜19 ì¼ì¼ ì‹ ê·œ í™•ì§„ì ìˆ˜ê°€ 103,600ëª…ìœ¼ë¡œ ì§‘ê³„ë˜ì–´ íŒ¬ë°ë¯¹ ì´ë˜ ì´ ëˆ„ì  í™•ì§„ì ìˆ˜ê°€ ì²œë§Œëª… ì´ìƒì— ë‹¬í•¨. ìµœê·¼ 5ì¼ ì—°ì† ì¼ì¼ ì‹ ê·œ í™•ì§„ìê°€ 10ë§Œëª… ì´ìƒ ë°œìƒí•˜ì—¬, ì „ ì„¸ê³„ ì½”ë¡œë‚˜19 ì´ ëˆ„ì  í™•ì§„ì(5ì²œ20ë§Œì—¬ëª…)ì˜ â…• ê°€ëŸ‰ ì°¨ì§€\r\n" + 
+						"\r\n" + 
+						"   - 11.8. ë¯¸ ìœ íƒ€ì£¼ëŠ” ì½”ë¡œë‚˜19 í™•ì§„ì ê¸‰ì¦ìœ¼ë¡œ ì¸í•œ ì‹¬ê°í•œ ì…ì›ë³‘ìƒ ë¶€ì¡± ë¬¸ì œì— ì§ë©´í•˜ì—¬ ì£¼ ì „ì—­ì— ë¹„ìƒì‚¬íƒœë¥¼ ì„ í¬. ì´ì— ë”°ë¼, ì¶”í›„ ë³„ë„ ê³µì§€ê°€ ìˆì„ ë•Œê¹Œì§€ ë§ˆìŠ¤í¬ ì˜ë¬´ì°©ìš©ì´ ì‹œí–‰ë˜ë©°, í–¥í›„ 2ì£¼ê°„ ì„¸ëŒ€ ë‚´ ê°€ì¡± ê°„ ëª¨ì„ë§Œ í—ˆìš©ë˜ë©°, ëª¨ë“  êµì™¸í™œë™ì€ ì ì • ë³´ë¥˜ ë° ì—°ê¸°ë¨\r\n" + 
+						" \r\n" + 
+						"\r\n" + 
+						" ó°š ì¹´ìíìŠ¤íƒ„\r\n" + 
+						"   - ì¹´ìíìŠ¤íƒ„ ì •ë¶€ëŠ” ëŸ¬ì‹œì•„ì˜ ì½”ë¡œë‚˜19 í™•ì‚°ì„¸ë¥¼ ë°˜ì˜í•˜ì—¬ êµ­ê²½ë„ì‹œì¸ í˜íŠ¸ë¡œíŒŒë¸”ë¡­ìŠ¤í¬(Petropavlovsk)ì— 11.9.(ì›”) ë´‰ì‡„ ì¡°ì¹˜ë¥¼ ë‚´ë¦¬ê³ , í•´ë‹¹ ì§€ì—­ìœ¼ë¡œ í†µí•˜ëŠ” 5ê°œ ë„ë¡œë¥¼ íì‡„í•¨. ì˜ë£Œìš©í’ˆ ë° ìƒí™œí•„ìˆ˜ìš©í’ˆ ìš´ë°˜ì°¨ëŸ‰ê³¼ ì‘ê¸‰ì°¨ë§Œ ë„ì‹œ ì¶œì…ì´ ê°€ëŠ¥í•¨\r\n" + 
+						"\r\n" + 
+						" ó°š í•„ë¦¬í•€ \r\n" + 
+						"   - í•„ë¦¬í•€ ë‹¹êµ­ì€ 11.9.(ì›”)ì— ì½”ë¡œë‚˜19 ì‚¬ë§ìê°€ 108ëª… ë°œìƒí•˜ì—¬ ì§€ë‚œ 10.23.(ê¸ˆ) ì´í›„ ìµœë‹¤ë¥¼ ê¸°ë¡í–ˆë‹¤ê³  ë°œí‘œ \r\n" + 
+						"   - í•„ë¦¬í•€ ì •ë¶€ëŠ” ë‚´ë…„ì— êµ­ë¯¼ì˜ 25% ì´ìƒì´ ì½”ë¡œë‚˜19 ë°±ì‹ ì„ ì ‘ì¢…í•  ìˆ˜ ìˆë„ë¡ ì½”ë¡œë‚˜19 ë°±ì‹  5,000ë§Œ ë„ìŠ¤ë¥¼ í™•ë³´í•  ê³„íš\r\n" + 
+						"\r\n" + 
+						" ó°š ëŸ¬ì‹œì•„\r\n" + 
+						"   - ëŸ¬ì‹œì•„ ë³´ê±´ ë‹¹êµ­ì€ 11.9(ì›”)(í˜„ì§€ì‹œê°„) ì½”ë¡œë‚˜19 ë°±ì‹  ìŠ¤í‘¸íŠ¸ë‹ˆí¬ì˜ íš¨ëŠ¥ì´ 90% ì´ìƒì´ë©°, *ë˜ ë‹¤ë¥¸ íš¨ê³¼ì ì¸ ë°±ì‹ ì˜ ì¶œí˜„ì€ ëª¨ë‘ì—ê²Œ í¬ì†Œì‹ì´ë¼ê³  ë°í˜\r\n" + 
+						"   \r\n" + 
+						" ó°š í”„ë‘ìŠ¤\r\n" + 
+						"   - í”„ë‘ìŠ¤ ë³´ê±´ì¥ê´€ì€ ìµœê·¼ ì½”ë¡œë‚˜19 ì¬í™•ì‚°ì´ ì‹¬ê°í•´ì§ì— ë”°ë¼ ì¤‘í™˜ìì‹¤ ì…ì›í™˜ì ìˆ˜ê°€ ì§€ë‚œ 4ì›”ì— ê¸°ë¡í–ˆë˜ ìµœê³ ì¹˜ì— ìœ¡ë°•í•˜ê³  ìˆì–´ â€˜ì§€ê¸ˆ ê²°ì •ì ì¸ ìˆœê°„â€™ì´ë¼ë©° ì´ë™ì œí•œ ë° ì˜ˆë°© ìˆ˜ì¹™ ì¤€ìˆ˜ë¥¼ ì¬ì°¨ ê°•ì¡°í•¨   \r\n" + 
+						"\r\n" + 
+						" ó°š ì¤‘êµ­\r\n" + 
+						"   - ì¤‘êµ­ ìœ„ìƒê±´ê°•ìœ„ì›íšŒëŠ” 11.9.(ì›”) ë°œìƒí•œ ì‹ ê·œ í™•ì§„ì 22ëª… ê°€ìš´ë° í•´ì™¸ìœ ì…ì´ 21ëª…, ì§€ì—­ì‚¬íšŒì—ì„œ 1ëª…(ìƒí•˜ì´)ì´ ë°œìƒí–ˆë‹¤ê³  ë°í˜, ìƒí•˜ì´ì‹œ ìœ„ìƒê±´ê°•ìœ„ì›íšŒëŠ” 11.9.(ì›”) í™•ì¸ëœ ì§€ì—­ì‚¬íšŒ í™•ì§„ìëŠ” ìƒí•˜ì´ í‘¸ë‘¥ êµ­ì œê³µí•­ ìˆ˜í™”ë¬¼ ìš´ë°˜ ë‹´ë‹¹ ì§ì›(51ì„¸ ë‚¨ì„±)ìœ¼ë¡œ ì¦‰ê° ê²©ë¦¬ ì¡°ì¹˜í–ˆìœ¼ë©° ë°€ì ‘ì ‘ì´‰ì 26ëª…ë„ í•¨ê»˜ ê²©ë¦¬í•˜ê³  ì˜ë£Œê´€ì°°ì„ ì§„í–‰ ì¤‘ì´ë¼ê³  ë°í˜\r\n" + 
+						"    * ì „ë‚ (8ì¼)ì—ë„ í†ˆì§„ì˜ í•œ ìˆ˜ì… ëƒ‰ë™ì‹í’ˆ íšŒì‚¬ í¬ì¥ì—…ë¬´ ë‹´ë‹¹ ì§ì› 1ëª…ì´ ì§€ì—­ì‚¬íšŒ í™•ì§„ íŒì •ì„ ë°›ìŒ\r\n" + 
+						" \r\n" + 
+						" ó°š í™ì½©\r\n" + 
+						"   - í™ì½© ì •ë¶€ëŠ” ë§Œì„± ì§ˆí™˜ì„ ì•“ê³  ìˆìœ¼ë‚˜ ì½”ë¡œë‚˜19ë¡œ ì¸í•´ ê·€êµ­í•  ìˆ˜ ì—†ëŠ” ê´‘ë™ ì§€ì—­ ê±°ì£¼ í™ì½© ì£¼ë¯¼ì—ê²ŒëŠ” 11.10(í™”)ë¶€í„° 1ì¸ë‹¹ 100ìœ„ì•ˆ(í•œí™” ì•½ 16,000ì›)ì˜ ì˜ë£Œ ë³´ì¡°ê¸ˆì„ ì§€ê¸‰í•œë‹¤ê³  ë°œí‘œí•¨. ë‹¨, ë³´ì¡°ê¸ˆì€ í™ì½©ëŒ€í•™ ë¶€ì„¤ ì„ ì „ë³‘ì›ì— ë°©ë¬¸í•˜ëŠ” ì‚¬ëŒì—ê²Œë§Œ ì§€ê¸‰í•˜ê¸°ë¡œ ë³‘ì› ì¸¡ê³¼ í•©ì˜í•¨\r\n" + 
+						"\r\n" + 
+						" ó°š ì¼ë³¸\r\n" + 
+						"   - ì¼ë³¸ ë³´ê±´ë¶€ ì¥ê´€ì€ ì½”ë¡œë‚˜19 ë°±ì‹ ì´ ê³µê¸‰ë  ì‹œ ë…¸ì¸ì—ê²Œ ê°€ì¥ ìš°ì„ ì ìœ¼ë¡œ ì ‘ì¢…í•  ê²ƒì´ë©°, ê·¸ë°–ì— ì‹¬ì¥ë³‘, ë§Œì„±íì§ˆí™˜, ë‡Œí˜ˆê´€ì§ˆí™˜, ì‹ ë¶€ì „ì„ í¬í•¨í•œ ë§Œì„±ì§ˆë³‘ í™˜ì ë“± ìš°ì„ ì ìœ¼ë¡œ ë°±ì‹  ì ‘ì¢…ì„ ë°›ì„ ì‚¬ëŒë“¤ì—ê²Œ ë¬´ë£Œ ë°±ì‹  ì¿ í°ì„ ë‚˜ëˆ ì¤„ ê³„íšì´ë¼ê³  ë°œí‘œ\r\n" + 
+						"\r\n" + 
+						"\r\n" + 
+						" ó°š ë§ë ˆì´ì‹œì•„ \r\n" + 
+						"  - ë§ë ˆì´ì‹œì•„ êµìœ¡ë¶€ëŠ” ì½”ë¡œë‚˜19ì˜ í™•ì‚°ì„ ì°¨ë‹¨í•˜ê¸° ìœ„í•´ì„œ 11.9.(ì›”)ë¶€í„° 12.17.(ëª©)ê¹Œì§€ ë§ë ˆì´ì‹œì•„ ë‚´ ëª¨ë“  ì´ˆÂ·ì¤‘Â·ê³ ë“±í•™êµë¥¼ íì‡„í•˜ê³ , ë“±êµìˆ˜ì—…ì„ ì›ê²©ìˆ˜ì—…ìœ¼ë¡œ ì „í™˜í•œë‹¤ê³  ë°í˜");
 				break;
-			case "ÇØ¿Ü ÄÚ·Î³ª »çÀÌÆ®":
+			case "í•´ì™¸ ì½”ë¡œë‚˜ ì‚¬ì´íŠ¸":
 				new newWindow();
-				newWindow.area.setText("ÇØ¿Ü ÄÚ·Î³ª »çÀÌÆ®");
+				newWindow.area.setText("í•´ì™¸ ì½”ë¡œë‚˜ í™•ì§„ì í˜„í™© ì‚¬ì´íŠ¸ì´ë‹¤.\r\n" + 
+						"https://www.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6");
 				break;
-			case "ÇØ¿Ü ¹ÙÀÌ·¯½º ¹®°Ç":
+//			case "í•´ì™¸ ë°”ì´ëŸ¬ìŠ¤ ë¬¸ê±´":
+//				new newWindow();
+//				newWindow.area.setText("í•´ì™¸ ë°”ì´ëŸ¬ìŠ¤ ë¬¸ê±´");
+//				break;
+			case "í•´ì™¸ ë°±ì‹  ì •ë³´":
 				new newWindow();
-				newWindow.area.setText("ÇØ¿Ü ¹ÙÀÌ·¯½º ¹®°Ç");
-				break;
-			case "ÇØ¿Ü ¹é½Å Á¤º¸":
-				new newWindow();
-				newWindow.area.setText("ÇØ¿Ü ¹é½Å Á¤º¸");
+				newWindow.area.setText("2020ë…„ 11ì›” 11ê¸°ì¤€\r\n" + 
+						"í™”ì´ì ì½”ë¡œë‚˜ ë°±ì‹ , ì˜ˆë°©íš¨ê³¼ 90% ë„˜ì–´â€¦â€œë§ˆì¹¨ë‚´ ë¹›ì´ ë³´ì¸ë‹¤.â€\r\n" + 
+						"í™”ì´ì ë°±ì‹  ê°€ê²© â€œêµ­ê°€, ì§€ì—­ë³„ ì°¨ë“±â€¦ ì‹œì„¸ë³´ë‹¤ ë‚®ê²Œ ì±…ì •â€\r\n" + 
+						"í™”ì´ì \"ë°±ì‹  90% ì˜ˆë°© íš¨ê³¼\"...\"ì´ë‹¬ ë§ ê¸´ê¸‰ì‚¬ìš© ìŠ¹ì¸ ê¸°ëŒ€\"\r\n" + 
+						"íŒŒìš°ì¹˜ ì†Œì¥ â€œí™”ì´ì ë°±ì‹ , ì½”ë¡œë‚˜ íŒ¬ë°ë¯¹ ëë‚¼ ì ì¬ë ¥ ìˆì–´â€");
 				break;		
 				
-			case "ÅØ½ºÆ® µ¥ÀÌÅÍ ¿­±â":
-				//ÇØ´ç °æ·Î¿¡ ÀÖ´Â ÆÄÀÏÀ» ¿ÀÇÂÇÕ´Ï´Ù. 
+			case "í…ìŠ¤íŠ¸ ë°ì´í„° ì—´ê¸°":
+				//í•´ë‹¹ ê²½ë¡œì— ìˆëŠ” íŒŒì¼ì„ ì˜¤í”ˆí•©ë‹ˆë‹¤. 
 				Desktop.getDesktop().edit(new File("C:\\Users\\user\\Desktop\\java\\corona\\src\\original_csv_file\\test_text_old.csv"));
 				break;
-			case "ÆÄÀÏ ÀúÀå":
+			case "íŒŒì¼ ì €ì¥":
 				new newWindow();
-				newWindow.area.setText("ÆÄÀÏ ÀúÀå");
+				newWindow.area.setText("ì•„ì§ êµ¬í˜„ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.");
 				break;
-			case "Á¾·á":
-				System.exit(0);//Á¾·á ´©¸£¸é ÇÁ·Î±×·¥ Á¾·áÇÕ´Ï´Ù. 
+			case "ì¢…ë£Œ":
+				System.exit(0);
 				break;	
 		}
-		}catch (IOException e1) { //desktopÀ» ÅëÇØ  ¸Ş¸ğÀåÀ» ½ÇÇàÇÒ °æ¿ì¿¡ ¹ß»ıÇÒ ¼ö ÀÖ´Â ¿¹¿Ü¸¦ Ã³¸®ÇÕ´Ï´Ù. 
+		}catch (IOException e1) { //desktopì„ í†µí•´  ë©”ëª¨ì¥ì„ ì‹¤í–‰í•  ê²½ìš°ì— ë°œìƒí•  ìˆ˜ ìˆëŠ” ì˜ˆì™¸ë¥¼ ì²˜ë¦¬í•©ë‹ˆë‹¤. 
 			e1.printStackTrace();
-			System.out.printf("IOException ¿¹¿Ü°¡ ¹ß»ıÇß½À´Ï´Ù:%s",e1);
+			System.out.printf("IOException ì˜ˆì™¸ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤:%s",e1);
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
 }
