@@ -23,7 +23,7 @@ public class show_detail_move extends JFrame{
 	show_detail_move(String data_set,String[] array_data){ //일반 문자열/ 배열형 문자열 받아옴. 
 		setTitle("SHOW DETAIL ACTION");
 		//프레임바 자바 이모티콘 말고, 원하는 이미지로 지정함. 
-		ImageIcon img = new ImageIcon("C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\covid.jpg");
+		ImageIcon img = new ImageIcon("images2/covid.jpg");
 		setIconImage(img.getImage());
 		
 		area = new JTextArea(80,120);
@@ -37,7 +37,7 @@ public class show_detail_move extends JFrame{
 		
 		JButton search = new JButton("Search");
 		//"C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\corona-5174671_1920.jpg"
-		icon = new ImageIcon("C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\corona-5174671_1920.jpg");
+		icon = new ImageIcon("images2/corona-5174671_1920.jpg");
 		JPanel background = new JPanel() {
 			public void paintComponent(Graphics g) {
 				g.drawImage(icon.getImage(),0,0,null);
