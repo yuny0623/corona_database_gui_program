@@ -30,11 +30,11 @@ public class guiAct2 extends JFrame implements ActionListener{
 		setLayout(new BorderLayout(10,10));    
 		
 		//프레임바 자바 이모티콘 말고, 원하는 이미지로 지정함. 
-		ImageIcon img = new ImageIcon("C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\covid.jpg");
+		ImageIcon img = new ImageIcon("images2/covid.jpg");
 		setIconImage(img.getImage());
 		
 		
-		background_icon = new ImageIcon("C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\coronavirus-4833754_1280.jpg");
+		background_icon = new ImageIcon("images2/coronavirus-4833754_1280.jpg");
 		main_background = new JPanel() {
 			public void paintComponent(Graphics g) {
 				g.drawImage(background_icon.getImage(),0,0,null);
@@ -57,7 +57,7 @@ public class guiAct2 extends JFrame implements ActionListener{
 	}
 	
 	static void show_image_center() {
-		seoul_icon = new ImageIcon("C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\map2.png");
+		seoul_icon = new ImageIcon("images2/map2.png");
 		JPanel seoul_background = new JPanel() {
 			public void paintComponent(Graphics g) {
 				g.drawImage(seoul_icon.getImage(),0,0,null);
@@ -72,7 +72,7 @@ public class guiAct2 extends JFrame implements ActionListener{
 	}
 	
 	void wash_image() {
-		wash_icon = new ImageIcon("C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\how2.jpg");
+		wash_icon = new ImageIcon("images2/how2.jpg");
 		JPanel wash_background = new JPanel() {
 			public void paintComponent(Graphics g) {
 				g.drawImage(wash_icon.getImage(),0,0,null);
