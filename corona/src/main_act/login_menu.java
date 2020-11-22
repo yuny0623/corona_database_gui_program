@@ -21,15 +21,17 @@ public class login_menu extends JFrame{
 	login_menu(){
 		setTitle("CORONA PROGRAM");
 		//프레임바 자바 이모티콘 말고, 원하는 이미지로 지정함. 
-		ImageIcon img = new ImageIcon("C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\covid.jpg");
+		ImageIcon img = new ImageIcon("images2/covid.jpg");
 		setIconImage(img.getImage());
 		
 		setLocation(450,200);                  //초기 위치 설정해주기 .
 		//"C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\virus-4835301_640.jpg"
-		//백그라운드 이미지 생성해주기. 
-		icon = new ImageIcon("C:\\Users\\user\\Desktop\\java\\corona\\src\\images2\\virus-4835301_640.jpg");
+		//백그라운드 이미지 생성해주기.
+		//Image img2 = Toolkit.getDefaultToolkit().getImage("images2/virus-4835301_640.jpg");
 		
-		@SuppressWarnings("serial")
+		icon = new ImageIcon("images2/virus-4835301_640.jpg");
+		//icon = new ImageIcon("images2/virus-4835301_640.jpg");
+		@SuppressWarnings("serial") 
 		JPanel background = new JPanel() {
 			public void paintComponent(Graphics g) {
 				g.drawImage(icon.getImage(),0,0,null);
